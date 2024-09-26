@@ -42,18 +42,19 @@ const LoginPage = () => {
                             <InputText id="email1" type="text" placeholder="Email address" className="w-full md:w-30rem mb-5" style={{ padding: '1rem' }} />
 
                             <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
-                                Password
+                                m
                             </label>
                             <Password inputId="password1" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" toggleMask className="w-full mb-5" inputClassName="w-full p-3 md:w-30rem"></Password>
 
                             <div className="flex align-items-center justify-content-between mb-5 gap-5">
-                                {/* <div className="flex align-items-center">
+                                <div className="flex align-items-center">
                                     <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
-                                    <label htmlFor="rememberme1">Remember me</label>
+                                    <label htmlFor="rememberme1">Se souvenir de moi</label>
                                 </div>
                                 <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
-                                    Forgot password?
-                                </a> */}
+                                    {/* Forgot password? */}
+                                    Mot de passe oublié?
+                                </a>
                             </div>
                             <Button label="Connexion" className="w-full p-3 text-xl" onClick={() => router.push('/')}></Button>
                         </div>
