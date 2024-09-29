@@ -5,7 +5,6 @@ import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { AppTopbarRef } from '@/types';
 import { LayoutContext } from './context/layoutcontext';
-import './styles.scss'
 import User from '@/Components/LoggedInUserProfilePreview/User';
 import '../styles/components/User.scss'
 
