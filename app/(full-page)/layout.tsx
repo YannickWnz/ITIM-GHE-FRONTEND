@@ -7,15 +7,16 @@ interface SimpleLayoutProps {
 }
 
 export const metadata: Metadata = {
-    title: 'PrimeReact Sakai',
-    description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.'
+    title: 'Gestion Honoraire & Ecolage',
+    description: ''
+    // description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.'
 };
 
 export default function SimpleLayout({ children }: SimpleLayoutProps) {
     return (
         <React.Fragment>
             {children}
-            <AppConfig simple />
+            {/* <AppConfig simple /> */}
         </React.Fragment>
     );
 }

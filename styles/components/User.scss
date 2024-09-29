@@ -1,0 +1,45 @@
+.layout-topbar-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-profile {
+    width: 160px;
+    cursor: pointer;
+
+    .profile-container {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #6366F1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .user-infos {
+
+            p {
+                margin: 0;
+            }
+
+            p:nth-child(1) {
+                
+            }
+            p:nth-child(2) {
+                font-size: .8em;
+                color: #b2bec3;
+            }
+        }
+
+    }
+}

@@ -2,15 +2,23 @@
 
 import Link from 'next/link';
 import { classNames } from 'primereact/utils';
-import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react';
 import { AppTopbarRef } from '@/types';
 import { LayoutContext } from './context/layoutcontext';
+import User from '@/Components/LoggedInUserProfilePreview/User';
+// import '../styles/components/User.scss'
+import 'primeicons/primeicons.css';
+import { Button } from 'primereact/button';
+        
+
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
     const topbarmenubuttonRef = useRef(null);
+
+    const [showProfileSetting, setShowProfileSetting] = useState<boolean>(false)
 
     useImperativeHandle(ref, () => ({
         menubutton: menubuttonRef.current,
@@ -22,7 +30,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">
                 <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
-                <span>SAKAI</span>
+                {/* <span>SAKAI</span> */}
+                <span>SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
             </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
@@ -33,21 +42,43 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 <i className="pi pi-ellipsis-v" />
             </button>
 
-            <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
-                <button type="button" className="p-link layout-topbar-button">
-                    <i className="pi pi-calendar"></i>
-                    <span>Calendar</span>
-                </button>
-                <button type="button" className="p-link layout-topbar-button">
+            <div 
+            ref={topbarmenuRef} 
+            className={classNames('layout-topbar-menu flex items-center justify-between', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
+                
+                {/* <button type="button" className="p-link layout-topbar-button">
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
-                </button>
-                <Link href="/documentation">
-                    <button type="button" className="p-link layout-topbar-button">
-                        <i className="pi pi-cog"></i>
-                        <span>Settings</span>
-                    </button>
-                </Link>
+                </button> */}
+                <User  
+                    showProfileSetting={showProfileSetting}
+                    setShowProfileSetting={setShowProfileSetting}
+                />
+                {showProfileSetting && <div className="profile-setting">
+                    <div className="setting-container">
+                        <ul>
+                            <li>
+                                <span>
+                                    <i className="pi pi-user"></i>
+                                </span>
+                                
+                                <a href="#">Profile</a>
+                            </li>
+                            <li>
+                                <span>
+                                    <i className="pi pi-cog"></i>
+                                </span>
+                                <a href="#">Reglage</a>
+                            </li>
+                        </ul>
+                        
+                        <div className="logout-btn">
+                            <Button label="Deconnexion" severity="danger" />
+                            </div>
+
+                    </div>
+                </div>}
+                
             </div>
         </div>
     );
