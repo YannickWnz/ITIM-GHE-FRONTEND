@@ -4,14 +4,23 @@
 
     .btn-wrapper {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         padding: 5px;
+    
+        p {
+            font-weight: bold;
+            margin: 0;
+        }
 
-        * {
-            padding: 4px 5px;
-            background-color: #55efc4;
-            background-color: #00b894;
-            border: none;
+        span {
+            
+            * {
+                padding: 4px 5px;
+                background-color: #55efc4;
+                background-color: #00b894;
+                border: none;
+            }
         }
 
     }
