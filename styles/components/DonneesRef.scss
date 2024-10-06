@@ -13,8 +13,12 @@
 
             .icons-wrapper {
 
+                i {
+                    cursor: pointer;
+                }
+
                 i:nth-child(1) {
-                    margin-right: 7px;
+                    margin-right: 10px;
                 }
 
             }
