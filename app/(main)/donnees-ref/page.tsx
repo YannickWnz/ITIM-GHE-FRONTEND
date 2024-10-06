@@ -20,6 +20,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 
 // css file imports
 import '../../../styles/components/DonneesRef.scss'
+import ClassesFilieres from '@/Components/ClassesFilieres/ClassesFilieres';
 
 type DialogPositionType = {
     type: 'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
@@ -38,6 +39,8 @@ function DonneesRef() {
     const [position, setPosition] = useState<'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top');
     // const [position, setPosition] = useState<string>('center');
     const [changesConfirmed, setChangesConfirmed] = useState(false)
+
+    const [isClasseFiliereVisible, setClasseFiliereVisibility] = useState(false)
 
 
     const [editRefData, setEditRefData] = useState(false)
@@ -92,7 +95,12 @@ function DonneesRef() {
 
   return (
     <>
-                <ConfirmDialog />
+        <ConfirmDialog />
+
+        <ClassesFilieres 
+            visible={isClasseFiliereVisible}
+            setVisible={setClasseFiliereVisibility}
+        />
 
         <h1>Mise a jour des donnees referentielles</h1>
         {/* dialog test start*/}
@@ -134,12 +142,6 @@ function DonneesRef() {
                     </ul>
                 </div>
 
-                {/* <p className="m-0">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                </p> */}
             </Dialog>
 
             {editRefData 
@@ -209,7 +211,12 @@ function DonneesRef() {
                     </div>
                 </div>
             </div>
-            <div className="col-12 lg:col-6 xl:col-3">
+            <div 
+            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+            onClick={() =>{
+                setClasseFiliereVisibility(true)
+            }}
+            >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
