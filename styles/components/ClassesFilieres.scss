@@ -1,0 +1,36 @@
+
+
+.donnees-container {
+    
+    ul { 
+
+        .data-wrapper {
+            border: .5px solid #b2bec3;
+            border: .5px solid #E5E7EB;
+            border-radius: 5px;
+            padding: 10px;
+            align-items: center;
+            justify-content: space-between;
+
+            .icons-wrapper {
+
+                i {
+                    cursor: pointer;
+                }
+
+                i:nth-child(1) {
+                    margin-right: 10px;
+                }
+
+            }
+            
+        }
+
+        .data-wrapper:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        
+
+    }
+}
