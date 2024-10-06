@@ -7,6 +7,9 @@ import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/types';
 
+// react icons imports 
+import { BsClipboardDataFill } from "react-icons/bs";
+
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
 
@@ -14,6 +17,23 @@ const AppMenu = () => {
         {
             label: 'Acceuil',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
+        },
+        {
+            label: 'Donnees Referentielles',
+            items: [
+                { 
+                    label: 'Mise a jour des donnees', 
+                    icon: 'pi pi-fw pi-file-edit',
+                    to: '/donnees-ref',
+                    // items: [
+                    //     { label: 'Ecoles', icon: 'pi pi-fw pi-users', to: '/ecoles' },
+                    //     { label: 'Classes', icon: 'pi pi-fw pi-users', to: '/classes' },
+                    //     { label: 'Cycles', icon: 'pi pi-fw pi-users', to: '/cycles' },
+                    //     { label: 'Niveaux', icon: 'pi pi-fw pi-users', to: '/niveaux' }
+                    // ]
+                },
+
+            ]
         },
         {
             label: 'Gestion Roles & Acces',
