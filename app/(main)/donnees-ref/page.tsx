@@ -28,6 +28,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 // css file imports
 import '../../../styles/components/DonneesRef.scss'
 import ClassesFilieres from '@/Components/ClassesFilieres/ClassesFilieres';
+import { DonneesRefPopUp } from '@/Components/DonneesRefPopUp/DonneesRefPopUp';
 
 type DialogPositionType = {
     type: 'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
@@ -48,6 +49,10 @@ function DonneesRef() {
     const [changesConfirmed, setChangesConfirmed] = useState(false)
 
     const [isClasseFiliereVisible, setClasseFiliereVisibility] = useState(false)
+
+    const [donneesRefPopUpState, setDonneesRefPopUpState] = useState(false)
+
+    const [selectedDonneesRef, setSelectedDonneesRef] = useState('')
 
 
     const [editRefData, setEditRefData] = useState(false)
@@ -113,7 +118,7 @@ function DonneesRef() {
         {/* dialog test start*/}
         
             {/* <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }} footer={footerContent}> */}
-            <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
+            {/* <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
                 
                 <div className="p-0 m-0 donnees-container">
                     <ul className='p-0'>
@@ -149,9 +154,9 @@ function DonneesRef() {
                     </ul>
                 </div>
 
-            </Dialog>
+            </Dialog> */}
 
-            {editRefData 
+            {/* {editRefData 
             && 
             <Dialog 
             header="" 
@@ -171,13 +176,17 @@ function DonneesRef() {
                     defaultValue={'1ere Annee Informatique' || value}
                     
                 />
-            </Dialog>}
+            </Dialog>} */}
 
         {/* dialog test end*/}
         <div className="grid">
             <div 
             className="col-12 lg:col-6 xl:col-3 cursor-pointer"
-            onClick={() => setVisible(true)}
+            onClick={() => {
+                setVisible(true)
+                setSelectedDonneesRef('Promotion')
+                setDonneesRefPopUpState(true)
+            }}
             >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -307,8 +316,18 @@ function DonneesRef() {
                 </div>
             </div>
         </div>
-        <Toast ref={toast} />
-        <Toast ref={deleteToast} />
+        {/* <Toast ref={toast} />
+        <Toast ref={deleteToast} /> */}
+         {
+            donneesRefPopUpState 
+            &&
+            <DonneesRefPopUp 
+                donnesRef={selectedDonneesRef}
+                setDonneesRef={setSelectedDonneesRef}
+                popUpState={donneesRefPopUpState}
+                setPopUpState={setDonneesRefPopUpState}
+            />
+        }
     </>
   )
 }
