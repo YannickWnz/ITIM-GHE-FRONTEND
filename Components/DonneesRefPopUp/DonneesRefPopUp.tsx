@@ -6,7 +6,9 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-        
+
+// css import
+import '../../styles/components/DonneesRefPopUp.scss'
 
 
 type DonneesRefPopUpProps = {
@@ -20,6 +22,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     const toast = useRef<Toast>(null);
     const deleteToast = useRef<Toast>(null);
+    const emptyValueErrorToast = useRef<Toast>(null);
 
     const [visible, setVisible] = useState(true);
     const [editRefData, setEditRefData] = useState(false)
@@ -30,8 +33,15 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [changesConfirmed, setChangesConfirmed] = useState(false)
     const [toastState, setToastState] = useState(false)
 
+    // state for new donnees referentielles form
+    const [newDonneesRefFormState, setNewDonneesRefFormState] = useState(false)
 
-    const footerContent = (
+    const [isAddNewDataFormVisible, setAddNewDataFormState] = useState(false)
+
+    const [newDataValue, seNewDataValue] = useState<string>('')
+
+
+    const footerContent = editRefData ? (
         <div>
             <Button label="Annulez" icon="pi pi-times" onClick={() => {
                 setEditFormState(false)
@@ -48,13 +58,45 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 autoFocus 
             />
         </div>
-    );
+    ) 
+    :
+    (
+        <div>
+            <Button 
+            label="Annulez" 
+            icon="pi pi-times" 
+            onClick={() => {
+                setNewDonneesRefFormState(false)
+            }} className="p-button-text" />
+            <Button 
+                label="Confirmez" 
+                icon="pi pi-check" 
+                onClick={() => {
+                    if(!newDataValue.trim()) {
+                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut etre vide`, life: 3000});
+                        return
+                    }
+                    setNewDonneesRefFormState(false)
+                    showSuccess('Donnee creee avec succes')
+                }} 
+                autoFocus 
+            />
+        </div>
+    ) 
+    ;
 
     useEffect(() => {
         setTimeout(() => {
             setChangesConfirmed(false)
         }, 4000)
     }, [changesConfirmed])
+
+    const handleAddNewDonneesReferentielle = () => {
+        if(!newDataValue.trim()) {
+            toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut etre vide`, life: 3000});
+            return
+        }
+    }
 
 
     
@@ -86,10 +128,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     return (
         <>
         
+            {/* dialog containing form input that edit existing donnees referentielles */}
             {editRefData 
                 && 
                 <Dialog 
-                header="" 
+                header="Modification" 
                 visible={visible} 
                 style={{ width: '30vw' }} 
                 onHide={() => {
@@ -108,13 +151,53 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 </Dialog>
             }
 
-            {/* <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }}> */}
-            <Dialog header={`Mise a jour ${donnesRef}`} visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false)  }}>
+            {/* dialog containing form that added new donnees referentielles */}
+            {newDonneesRefFormState 
+                && 
+                <Dialog 
+                header="Creer une nouvelle donnee" 
+                visible={visible}
+                style={{ width: '30vw' }} 
+                onHide={() => {
+                    if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false)
+                }} 
+                position={position}
+                footer={footerContent}>
+                    <InputText 
+                        value={newDataValue} 
+                        onChange={(e) => 
+                            seNewDataValue(e.target.value)
+                        } 
+                        className='w-full outline-none'
+                    />
+                </Dialog>
+            }
+
+            {/* dialog containing lists of selected donnees referentielles */}
+            <Dialog 
+                header={`Mise a jour ${donnesRef}`} 
+                visible={visible} 
+                style={{ width: '50vw' }}
+                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef('') }}
+            >
                 
-                <div className="p-0 m-0 donnees-container">
+                <div className="p-0 m-0 popup-container">
+                    <div className="flex justify-end btn-wrapper">
+                        <span>
+                            <Button 
+                            // label={`Ajouter une ${donnesRef}`} 
+                            label={`Creer`} 
+                            icon="pi pi-plus-circle" 
+                            iconPos="right" 
+                            onClick={() => {
+                                setNewDonneesRefFormState(true)
+                            }}
+                            />
+                        </span>
+                    </div>
                     <ul className='p-0'>
                         <div className='data-wrapper flex'>
-                            <li className='list-none'>1ere Annee Informatique</li>
+                            <li className='list-none'>Exemple Donnee Referentielle 1</li>
                             <div className="icons-wrapper">
                                 <i 
                                 className="pi pi-file-edit" 
@@ -136,7 +219,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             </div>
                         </div>
                         <div className='data-wrapper flex'>
-                            <li className='list-none'>2eme Annee Informatique de gestion</li>
+                            <li className='list-none'>Exemple Donnee Referentielle 2</li>
                             <div className="icons-wrapper">
                                 <i className="pi pi-file-edit" style={{ fontSize: '1.1rem' }}></i>
                                 <i className="pi pi-trash" style={{ fontSize: '1.1rem' }}></i>
