@@ -53,7 +53,18 @@ const LoginPage = () => {
                             {/* <Button label="Error" severity="danger" onClick={showError} /> */}
 
             <div className="flex flex-column align-items-center justify-content-center">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
+                {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" /> */}
+                <div 
+                className="flex align-center"
+                style={{width: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center.'}}
+                >
+                    <img
+                    src={`/layout/images/logo_itim.png`}
+                    alt="Sakai logo"
+                    className="mb-5 w-6rem flex-shrink-0"
+                    style={{ height: '4em', width: '', maxWidth: '100%'}}
+                    />
+                </div>
                 <div
                     style={{
                         borderRadius: '56px',
