@@ -205,10 +205,10 @@ function DonneesRef() {
                 </div>
             </div>
             <div 
-            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
-            onClick={() =>{
-                setClasseFiliereVisibility(true)
-            }}
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{
+                    setClasseFiliereVisibility(true)
+                }}
             >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -222,15 +222,47 @@ function DonneesRef() {
                     </div>
                 </div>
             </div>
+            {/* <div 
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{}}
+            >
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Filiere</span>
+                            <div className="text-900 font-medium text-xl">3</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <LiaIndustrySolid className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+            <div 
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{}}
+            >
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Classe</span>
+                            <div className="text-900 font-medium text-xl">3</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <SiGoogleclassroom className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Niveau</span>
+                            <span className="block text-500 font-medium mb-3">Rubrique</span>
                             <div className="text-900 font-medium text-xl">3</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <SiLevelsdotfyi className='text-blue-500 text-xl' />
+                            <LiaIndustrySolid className='text-blue-500 text-xl' />
                         </div>
                     </div>
                 </div>
