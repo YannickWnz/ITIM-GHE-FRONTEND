@@ -29,9 +29,19 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
+                {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" /> */}
+                <img 
+                    src={`/layout/images/logo_itim.png`}
+                    // width="47.22px" 
+                    width="80px" 
+                    // height={'35px'} 
+                    height={'50px'} 
+                    alt="logo" 
+                />
                 {/* <span>SAKAI</span> */}
-                <span>SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                <span
+                style={{fontWeight: "bold", color: "#0003B4"}}
+                >SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
             </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
