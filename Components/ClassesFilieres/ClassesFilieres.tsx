@@ -42,9 +42,10 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
 
   return (
     <>
-        <Dialog header="Mis a jour filiere" className='border-none' visible={visible} style={{ width: '85vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
+        <Dialog header="Mis a jour filiere" className='border-none' visible={visible} style={{ width: '95vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
 
         <div className="card flex justify-content-center">
+            {/* filiere section start */}
             <div className="p-0 m-0 w-full donnees-container">
                 <div className="flex justify-between btn-wrapper">
                     <p>Filieres</p>
@@ -60,7 +61,7 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                     >
                         <div className="list flex align-center">
                             <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
-                            <li className='list-none ml-2.5'>1ere Annee Informatique</li>
+                            <li className='list-none ml-2.5'>Filiere 1</li>
                         </div>
                         <div className="icons-wrapper">
                             <i 
@@ -91,7 +92,7 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                     >
                         <div className="list flex align-center">
                             <RadioButton className='' inputId="ingredient1" name="pizza" value="Mushroom" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Mushroom'} />
-                            <li className='list-none ml-2.5'>1ere Annee Informatique</li>
+                            <li className='list-none ml-2.5'>Filiere 2</li>
                         </div>
                         <div className="icons-wrapper">
                             <i 
@@ -115,8 +116,85 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                     </div>
                 </ul>
             </div>
+            {/* filiere section ends */}
 
-            {/* filiere & classe divider */}
+            {/* filiere & niveau divider */}
+            <Divider layout="vertical" />
+
+            {/* niveau section start */}
+            <div className="p-0 m-0 w-full donnees-container">
+                <div className="flex justify-between btn-wrapper">
+                    <p>Niveau</p>
+                    <span><Button label="Ajouter une filiere" icon="pi pi-plus-circle" iconPos="right" /></span>
+                </div>
+                <ul className='p-0 w-100'>
+                    <div 
+                    className={`data-wrapper flex ${selected ? 'selected' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
+                            <li className='list-none ml-2.5'>Niveau 1</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                    <div 
+                    className={`data-wrapper flex ${selected ? '' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Mushroom" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Mushroom'} />
+                            <li className='list-none ml-2.5'>Niveau 2</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+            {/* niveau section ends */}
+
+            {/* niveau & classe divider */}
             <Divider layout="vertical" />
 
             <div className="p-0 m-0 w-full donnees-container">
@@ -127,8 +205,8 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                 <ul className='p-0'>
                     <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
                         <div className="list flex align-center">
-                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
-                            <li className='list-none ml-2.5'>1ere Annee Informatique</li>
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 1</li>
                         </div>
                         <div className="icons-wrapper">
                             <i 
@@ -152,8 +230,8 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                     </div>
                     <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
                         <div className="list flex align-center">
-                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
-                            <li className='list-none ml-2.5'>1ere Annee Informatique</li>
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 2</li>
                         </div>
                         <div className="icons-wrapper">
                             <i 
@@ -177,8 +255,8 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                     </div>
                     <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
                         <div className="list flex align-center">
-                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
-                            <li className='list-none ml-2.5'>1ere Annee Informatique</li>
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 3</li>
                         </div>
                         <div className="icons-wrapper">
                             <i 
@@ -204,7 +282,7 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
             </div>
 
             {/* classe & rubrique divider */}
-            <Divider layout="vertical" />
+            {/* <Divider layout="vertical" />
 
             <div className="p-0 m-0 w-full donnees-container">
                 <div className="flex justify-between btn-wrapper">
@@ -235,7 +313,7 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
                         </div>
                     </div>
                 </ul>
-            </div>
+            </div> */}
 
             
 
