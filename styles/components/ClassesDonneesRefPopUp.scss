@@ -1,0 +1,42 @@
+
+.content-wrapper {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+
+    p {
+        width: 100%;
+        max-width: 70%;
+    }
+
+    
+
+}
+
+.btn-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    // justify-content: center;
+    align-items: center;
+    padding: 5px;
+    margin-top: 20px;
+
+    p {
+        font-weight: bold;
+        margin: 0;
+    }
+
+    span {
+        
+        * {
+            padding: 4px 5px;
+            background-color: #55efc4;
+            background-color: #00b894;
+            border: none;
+        }
+    }
+
+}
+
