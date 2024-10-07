@@ -130,12 +130,14 @@ const LoginPage = () => {
                                 className="w-full p-3 text-xl" 
                                 onClick={
                                     () => {
-                                        // router.push('/')
                                         if(!loginInfos.email.trim()) {
                                             showError('Veuillez saisir votre email!')
+                                            return;
                                         } else if(!loginInfos.password.trim()) {
                                             showError('Veuillez saisir votre mot de passe!')
+                                            return;
                                         }
+                                        router.push('/')
                                     }
                                 }
                             ></Button>
