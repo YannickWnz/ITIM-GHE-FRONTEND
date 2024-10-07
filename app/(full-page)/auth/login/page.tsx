@@ -56,7 +56,7 @@ const LoginPage = () => {
                 {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" /> */}
                 <div 
                 className="flex align-center"
-                style={{width: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center.'}}
+                style={{width: '200px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
                 >
                     <img
                     src={`/layout/images/logo_itim.png`}
@@ -64,6 +64,9 @@ const LoginPage = () => {
                     className="mb-5 w-6rem flex-shrink-0"
                     style={{ height: '4em', width: '', maxWidth: '100%'}}
                     />
+                    <span
+                    style={{fontWeight: "bold", color: "#0003B4", marginBottom: "40px", marginLeft: "10px", fontSize: "2rem"}}
+                    >SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
                 </div>
                 <div
                     style={{
@@ -128,8 +131,7 @@ const LoginPage = () => {
                             <Button 
                                 label="Connexion" 
                                 className="w-full p-3 text-xl" 
-                                onClick={
-                                    () => {
+                                onClick={() => {
                                         if(!loginInfos.email.trim()) {
                                             showError('Veuillez saisir votre email!')
                                             return;
