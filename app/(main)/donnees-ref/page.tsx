@@ -53,12 +53,14 @@ function DonneesRef() {
 
     const [isClasseFiliereVisible, setClasseFiliereVisibility] = useState(false)
 
-    const [donneesRefPopUpState, setDonneesRefPopUpState] = useState(false)
+    const [donneesRefPopUpState, setDonneesRefPopUpState] = useState<boolean>(false)
 
-    const [selectedDonneesRef, setSelectedDonneesRef] = useState('')
+    const [selectedDonneesRef, setSelectedDonneesRef] = useState<string>('')
 
 
-    const [editRefData, setEditRefData] = useState(false)
+    const [editRefData, setEditRefData] = useState<boolean>(false)
+
+    const [classesDonneesRefPopUp, setClasseDonneesRefPopUp] = useState<boolean>(false)
 
     const footerContent = (
         <div>
@@ -218,7 +220,9 @@ function DonneesRef() {
             {/* classe starts */}
             <div 
                 className="col-12 lg:col-6 xl:col-3 cursor-pointer"
-                onClick={() =>{}}
+                onClick={() =>{
+                    setClasseDonneesRefPopUp(true)
+                }}
             >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -322,7 +326,13 @@ function DonneesRef() {
         {/* donnees referentielles pop up ends */}
 
         {/* classe donnees referentielles pop up start */}
-        <ClassesDonnesRefPopUp />
+        {classesDonneesRefPopUp 
+            && 
+            <ClassesDonnesRefPopUp  
+            isComponentVisible={classesDonneesRefPopUp}
+            setComponentVisibility={setClasseDonneesRefPopUp}
+            />
+        }
         {/* classe donnees referentielles pop up end */}
     </>
   )
