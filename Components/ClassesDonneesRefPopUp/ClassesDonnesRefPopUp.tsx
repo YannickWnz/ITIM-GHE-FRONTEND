@@ -6,7 +6,12 @@ import { Dropdown } from 'primereact/dropdown';
 
 import '../../styles/components/ClassesDonneesRefPopUp.scss'
 
-export const ClassesDonnesRefPopUp = () => {
+type TComponentProps = {
+    isComponentVisible: boolean,
+    setComponentVisibility: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibility}: TComponentProps) => {
 
     const [visible, setVisible] = useState(true);
 
@@ -52,7 +57,7 @@ export const ClassesDonnesRefPopUp = () => {
              header="Mise a jour Classe" 
              visible={visible} 
              style={{ width: '50vw', padding: '0' }} 
-             onHide={() => {if (!visible) return; setVisible(false); }}>
+             onHide={() => {if (!visible) return; setVisible(false); setComponentVisibility(false) }}>
                 <div 
                 className="flex justify-between w-100"
                 style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -69,7 +74,7 @@ export const ClassesDonnesRefPopUp = () => {
                             placeholder="Selectionnez une filiere" className="w-full md:w-14rem" />
                     </div>
                 </div>
-                <div className="flex justify-center btn-wrapper">
+                <div className="flex justify-center btn-wrapper mt-3">
                     <span>
                         <Button 
                         // label={`Ajouter une ${donnesRef}`} 
