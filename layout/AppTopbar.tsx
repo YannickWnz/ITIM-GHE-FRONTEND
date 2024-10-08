@@ -48,7 +48,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 {/* <span>SAKAI</span> */}
                 <span
                 style={{fontWeight: "bold", color: "#0003B4", marginBottom: "5px"}}
-                >SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                >SIREF {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
             </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
