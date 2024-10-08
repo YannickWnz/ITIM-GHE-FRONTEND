@@ -31,6 +31,7 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import '../../../styles/components/DonneesRef.scss'
 import ClassesFilieres from '@/Components/ClassesFilieres/ClassesFilieres';
 import { DonneesRefPopUp } from '@/Components/DonneesRefPopUp/DonneesRefPopUp';
+import { ClassesDonnesRefPopUp } from '@/Components/ClassesDonneesRefPopUp/ClassesDonnesRefPopUp';
 
 type DialogPositionType = {
     type: 'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
@@ -319,6 +320,10 @@ function DonneesRef() {
              />
         }
         {/* donnees referentielles pop up ends */}
+
+        {/* classe donnees referentielles pop up start */}
+        <ClassesDonnesRefPopUp />
+        {/* classe donnees referentielles pop up end */}
     </>
   )
 }
