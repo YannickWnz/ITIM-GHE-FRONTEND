@@ -7,6 +7,15 @@ import { IoMdSchool } from "react-icons/io";
 import { LuCalendarClock } from "react-icons/lu";
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaBook } from "react-icons/fa";
+import { GiTeacher } from "react-icons/gi";
+import { LiaIndustrySolid } from "react-icons/lia";
+import { SiLevelsdotfyi } from "react-icons/si";
+import { LiaBusinessTimeSolid } from "react-icons/lia";
+import { FaBusinessTime } from "react-icons/fa";
+import { GiTimeBomb } from "react-icons/gi";
+import { CgPathDivide } from "react-icons/cg";
+
+
 
 // primereact component imports
 import { Dialog } from 'primereact/dialog';
@@ -21,6 +30,8 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 // css file imports
 import '../../../styles/components/DonneesRef.scss'
 import ClassesFilieres from '@/Components/ClassesFilieres/ClassesFilieres';
+import { DonneesRefPopUp } from '@/Components/DonneesRefPopUp/DonneesRefPopUp';
+import { ClassesDonnesRefPopUp } from '@/Components/ClassesDonneesRefPopUp/ClassesDonnesRefPopUp';
 
 type DialogPositionType = {
     type: 'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
@@ -42,8 +53,14 @@ function DonneesRef() {
 
     const [isClasseFiliereVisible, setClasseFiliereVisibility] = useState(false)
 
+    const [donneesRefPopUpState, setDonneesRefPopUpState] = useState<boolean>(false)
 
-    const [editRefData, setEditRefData] = useState(false)
+    const [selectedDonneesRef, setSelectedDonneesRef] = useState<string>('')
+
+
+    const [editRefData, setEditRefData] = useState<boolean>(false)
+
+    const [classesDonneesRefPopUp, setClasseDonneesRefPopUp] = useState<boolean>(false)
 
     const footerContent = (
         <div>
@@ -103,74 +120,17 @@ function DonneesRef() {
         />
 
         <h1>Mise a jour des donnees referentielles</h1>
-        {/* dialog test start*/}
-        
-            {/* <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }} footer={footerContent}> */}
-            <Dialog header="Mise a jour promotion" visible={visible} style={{ width: '50vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
-                
-                <div className="p-0 m-0 donnees-container">
-                    <ul className='p-0'>
-                        <div className='data-wrapper flex'>
-                            <li className='list-none'>1ere Annee Informatique</li>
-                            <div className="icons-wrapper">
-                                <i 
-                                className="pi pi-file-edit" 
-                                style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    setEditRefData(true)
-                                    show('top')
-                                }}
-                                ></i>
-                                <i 
-                                className="pi pi-trash" 
-                                style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    confirmDelete()
-                                }}
-                                >
 
-                                </i>
-                            </div>
-                        </div>
-                        <div className='data-wrapper flex'>
-                            <li className='list-none'>2eme Annee Informatique de gestion</li>
-                            <div className="icons-wrapper">
-                                <i className="pi pi-file-edit" style={{ fontSize: '1.1rem' }}></i>
-                                <i className="pi pi-trash" style={{ fontSize: '1.1rem' }}></i>
-                            </div>
-                        </div>
-                    </ul>
-                </div>
-
-            </Dialog>
-
-            {editRefData 
-            && 
-            <Dialog 
-            header="" 
-            visible={visible} 
-            style={{ width: '30vw' }} 
-            onHide={() => {
-                if (!isEditFormVisible) return; setEditFormState(false); setEditRefData(false) 
-            }} 
-            position={position}
-            footer={footerContent}>
-                <InputText 
-                    // value={value} 
-                    onChange={(e) => 
-                    setValue(e.target.value)
-                    } 
-                    className='w-full outline-none'
-                    defaultValue={'1ere Annee Informatique' || value}
-                    
-                />
-            </Dialog>}
-
-        {/* dialog test end*/}
         <div className="grid">
+
+            {/* promotion starts */}
             <div 
             className="col-12 lg:col-6 xl:col-3 cursor-pointer"
-            onClick={() => setVisible(true)}
+            onClick={() => {
+                setVisible(true)
+                setSelectedDonneesRef('Promotion')
+                setDonneesRefPopUpState(true)
+            }}
             >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -184,7 +144,17 @@ function DonneesRef() {
                     </div>
                 </div>
             </div>
-            <div className="col-12 lg:col-6 xl:col-3">
+            {/* promotion ends */}
+
+            {/* annee academique starts */}
+            <div 
+            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+            onClick={() => {
+                setVisible(true)
+                setSelectedDonneesRef('Annee Academique')
+                setDonneesRefPopUpState(true)
+            }}
+            >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
@@ -197,25 +167,17 @@ function DonneesRef() {
                     </div>
                 </div>
             </div>
-            <div className="col-12 lg:col-6 xl:col-3">
-                <div className="card mb-0">
-                    <div className="flex justify-content-between mb-3">
-                        <div>
-                            <span className="block text-500 font-medium mb-3">Classe</span>
-                            <div className="text-900 font-medium text-xl">5</div>
-                        </div>
-                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            {/* <i className="pi pi-graduation-cap text-blue-500 text-xl" /> */}
-                            <SiGoogleclassroom className='text-blue-500 text-xl' />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* annee academique ends */}
+
+            {/* filiere starts */}
             <div 
-            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
-            onClick={() =>{
-                setClasseFiliereVisibility(true)
-            }}
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{
+                    // setClasseFiliereVisibility(true)
+                    setVisible(true)
+                    setSelectedDonneesRef('Filiere')
+                    setDonneesRefPopUpState(true)
+                }}
             >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -224,11 +186,59 @@ function DonneesRef() {
                             <div className="text-900 font-medium text-xl">3</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <IoMdSchool className='text-blue-500 text-xl' />
+                            <LiaIndustrySolid className='text-blue-500 text-xl' />
                         </div>
                     </div>
                 </div>
             </div>
+            {/* filiere ends */}
+
+            {/* niveau starts */}
+            <div 
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{
+                    // setClasseFiliereVisibility(true)
+                    setVisible(true)
+                    setSelectedDonneesRef('Niveau')
+                    setDonneesRefPopUpState(true)
+                }}
+            >
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Niveau</span>
+                            <div className="text-900 font-medium text-xl">3</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <SiLevelsdotfyi className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* niveau ends */}
+
+            {/* classe starts */}
+            <div 
+                className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+                onClick={() =>{
+                    setClasseDonneesRefPopUp(true)
+                }}
+            >
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Classe</span>
+                            <div className="text-900 font-medium text-xl">3</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <SiGoogleclassroom className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* classe ends */}
+
+            {/* rubrique starts */}
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -237,12 +247,22 @@ function DonneesRef() {
                             <div className="text-900 font-medium text-xl">3</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <IoMdSchool className='text-blue-500 text-xl' />
+                            <CgPathDivide className='text-blue-500 text-xl' />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="col-12 lg:col-6 xl:col-3">
+            {/* rubrique ends */}
+
+            {/* matiere starts */}
+            <div 
+            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+            onClick={() => {
+                setVisible(true)
+                setSelectedDonneesRef('Matiere')
+                setDonneesRefPopUpState(true)
+            }}
+            >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
@@ -255,9 +275,65 @@ function DonneesRef() {
                     </div>
                 </div>
             </div>
+            {/* matiere ends */}
+
+            {/* type professeur starts */}
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Type Professeur</span>
+                            <div className="text-900 font-medium text-xl">5</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <GiTeacher className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* type professeur ends */}
+
+            {/* volume horaire starts */}
+            <div className="col-12 lg:col-6 xl:col-3">
+                <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                        <div>
+                            <span className="block text-500 font-medium mb-3">Volume Horaire</span>
+                            <div className="text-900 font-medium text-xl">5</div>
+                        </div>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                            <FaBusinessTime className='text-blue-500 text-xl' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* volume horaire ends */}
+
         </div>
-        <Toast ref={toast} />
-        <Toast ref={deleteToast} />
+        
+
+        {/* donnees referentielles pop up start */}
+         {
+             donneesRefPopUpState 
+             &&
+             <DonneesRefPopUp 
+             donnesRef={selectedDonneesRef}
+             setDonneesRef={setSelectedDonneesRef}
+             popUpState={donneesRefPopUpState}
+             setPopUpState={setDonneesRefPopUpState}
+             />
+        }
+        {/* donnees referentielles pop up ends */}
+
+        {/* classe donnees referentielles pop up start */}
+        {classesDonneesRefPopUp 
+            && 
+            <ClassesDonnesRefPopUp  
+            isComponentVisible={classesDonneesRefPopUp}
+            setComponentVisibility={setClasseDonneesRefPopUp}
+            />
+        }
+        {/* classe donnees referentielles pop up end */}
     </>
   )
 }

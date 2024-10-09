@@ -42,229 +42,282 @@ function ClassesFilieres({visible, setVisible}: ClassesFilieresProps) {
 
   return (
     <>
-        <Dialog header="Mis a jour filiere" className='border-none' visible={visible} style={{ width: '70vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
+        <Dialog header="Mis a jour filiere" className='border-none' visible={visible} style={{ width: '95vw' }} onHide={() => {if (!visible) return; setVisible(false); }}>
 
         <div className="card flex justify-content-center">
+            {/* filiere section start */}
             <div className="p-0 m-0 w-full donnees-container">
-            <div className="flex justify-end btn-wrapper">
-                <Button label="Ajouter une filiere" icon="pi pi-plus-circle" iconPos="right" />
-            </div>
-                        <ul className='p-0 w-100'>
-                            <div 
-                            className={`data-wrapper flex ${selected ? 'selected' : ''}`}
-                            onClick={() => {
-                                setSelected(true)
-                                setIngredient('Cheese')
-                            }}
-                            >
-                                <div className="list flex align-center">
-                                    <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
-                                    <li className='list-none ml-2.5'>1ere Annee Informatique</li>
-                                </div>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
-
-                                    </i>
-                                </div>
-                            </div>
-                            <div 
-                            className={`data-wrapper flex ${selected ? '' : ''}`}
-                            onClick={() => {
-                                setSelected(true)
-                                setIngredient('Cheese')
-                            }}
-                            >
-                                <div className="list flex align-center">
-                                    <RadioButton className='' inputId="ingredient1" name="pizza" value="Mushroom" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Mushroom'} />
-                                    <li className='list-none ml-2.5'>1ere Annee Informatique</li>
-                                </div>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
-
-                                    </i>
-                                </div>
-                            </div>
-                        </ul>
+                <div className="flex justify-between btn-wrapper">
+                    <p>Filieres</p>
+                    <span><Button label="Ajouter une filiere" icon="pi pi-plus-circle" iconPos="right" /></span>
                 </div>
-            <Divider layout="vertical" />
-                <div className="p-0 m-0 w-full donnees-container">
-                        <div className="flex justify-end btn-wrapper">
-                            <Button label="Ajouter une classe" icon="pi pi-plus-circle" iconPos="right" />
+                <ul className='p-0 w-100'>
+                    <div 
+                    className={`data-wrapper flex ${selected ? 'selected' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
+                            <li className='list-none ml-2.5'>Filiere 1</li>
                         </div>
-                        <ul className='p-0'>
-                            <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
-                                <li className='list-none'>1ere Annee Informatique</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
 
-                                    </i>
-                                </div>
-                            </div>
-                            <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
-                                <li className='list-none'>1ere Annee Informatique</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
+                            </i>
+                        </div>
+                    </div>
+                    <div 
+                    className={`data-wrapper flex ${selected ? '' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Mushroom" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Mushroom'} />
+                            <li className='list-none ml-2.5'>Filiere 2</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
 
-                                    </i>
-                                </div>
-                            </div>
-                            <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
-                                <li className='list-none'>1ere Annee Informatique</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
+                            </i>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+            {/* filiere section ends */}
 
-                                    </i>
-                                </div>
-                            </div>
-                            <div className='data-wrapper flex'>
-                                <li className='list-none'>2eme Annee Informatique de gestion</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
+            {/* filiere & niveau divider */}
+            <Divider layout="vertical" />
 
-                                    </i>
-                                </div>
-                            </div>
-                        </ul>
+            {/* niveau section start */}
+            <div className="p-0 m-0 w-full donnees-container">
+                <div className="flex justify-between btn-wrapper">
+                    <p>Niveau</p>
+                    <span><Button label="Ajouter une filiere" icon="pi pi-plus-circle" iconPos="right" /></span>
                 </div>
+                <ul className='p-0 w-100'>
+                    <div 
+                    className={`data-wrapper flex ${selected ? 'selected' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} />
+                            <li className='list-none ml-2.5'>Niveau 1</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                    <div 
+                    className={`data-wrapper flex ${selected ? '' : ''}`}
+                    onClick={() => {
+                        setSelected(true)
+                        setIngredient('Cheese')
+                    }}
+                    >
+                        <div className="list flex align-center">
+                            <RadioButton className='' inputId="ingredient1" name="pizza" value="Mushroom" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Mushroom'} />
+                            <li className='list-none ml-2.5'>Niveau 2</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+            {/* niveau section ends */}
+
+            {/* niveau & classe divider */}
+            <Divider layout="vertical" />
+
+            <div className="p-0 m-0 w-full donnees-container">
+                <div className="flex justify-between btn-wrapper">
+                    <p>Classes</p>
+                    <span><Button label="Ajouter une classe" icon="pi pi-plus-circle" iconPos="right" /></span>
+                </div>
+                <ul className='p-0'>
+                    <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
+                        <div className="list flex align-center">
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 1</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                    <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
+                        <div className="list flex align-center">
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 2</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                    <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
+                        <div className="list flex align-center">
+                            {/* <RadioButton className='' inputId="ingredient1" name="pizza" value="Cheese" onChange={(e: RadioButtonChangeEvent) => setIngredient(e.value)} checked={ingredient === 'Cheese'} /> */}
+                            <li className='list-none ml-2.5'>Classe 3</li>
+                        </div>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+
+            {/* classe & rubrique divider */}
+            {/* <Divider layout="vertical" />
+
+            <div className="p-0 m-0 w-full donnees-container">
+                <div className="flex justify-between btn-wrapper">
+                    <p>Rubrique</p>
+                    <span><Button label="Ajouter une classe" icon="pi pi-plus-circle" iconPos="right" /></span>
+                </div>
+                <ul className='p-0'>
+                    <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
+                        <li className='list-none'>1ere Annee Informatique</li>
+                        <div className="icons-wrapper">
+                            <i 
+                            className="pi pi-file-edit" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // setEditRefData(true)
+                                // show('top')
+                            }}
+                            ></i>
+                            <i 
+                            className="pi pi-trash" 
+                            style={{ fontSize: '1.1rem' }}
+                            onClick={() => {
+                                // confirmDelete()
+                            }}
+                            >
+
+                            </i>
+                        </div>
+                    </div>
+                </ul>
+            </div> */}
+
+            
+
         </div>
-
-            {/* <Splitter style={{ minHeight: '400px' }}>
-                <SplitterPanel className="flex">
-                    <div className="p-0 m-0 w-full donnees-container">
-                        <ul className='p-0'>
-                            <div className='data-wrapper border-1 border-[#E5E7EB] flex'>
-                                <li className='list-none'>1ere Annee Informatique</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
-
-                                    </i>
-                                </div>
-                            </div>
-                            <div className='data-wrapper flex'>
-                                <li className='list-none'>2eme Annee Informatique de gestion</li>
-                                <div className="icons-wrapper">
-                                    <i 
-                                    className="pi pi-file-edit" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // setEditRefData(true)
-                                        // show('top')
-                                    }}
-                                    ></i>
-                                    <i 
-                                    className="pi pi-trash" 
-                                    style={{ fontSize: '1.1rem' }}
-                                    onClick={() => {
-                                        // confirmDelete()
-                                    }}
-                                    >
-
-                                    </i>
-                                </div>
-                            </div>
-                        </ul>
-                </div>
-                </SplitterPanel>
-                <SplitterPanel className="flex align-items-center justify-content-center">Panel 2</SplitterPanel>
-            </Splitter> */}
 
         </Dialog>
     </>

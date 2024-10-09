@@ -9,6 +9,7 @@ import User from '@/Components/LoggedInUserProfilePreview/User';
 // import '../styles/components/User.scss'
 import 'primeicons/primeicons.css';
 import { Button } from 'primereact/button';
+import { useRouter } from 'next/router';
         
 
 
@@ -26,12 +27,28 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         topbarmenubutton: topbarmenubuttonRef.current
     }));
 
+    // const router = useRouter();
+
+
     return (
         <div className="layout-topbar">
-            <Link href="/" className="layout-topbar-logo">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
+            <Link 
+            href="/" 
+            className="layout-topbar-logo flex align-center"
+            >
+                {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" /> */}
+                <img 
+                    src={`/layout/images/logo_itim.png`}
+                    // width="47.22px" 
+                    width="80px" 
+                    // height={'35px'} 
+                    height={'50px'} 
+                    alt="logo" 
+                />
                 {/* <span>SAKAI</span> */}
-                <span>SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                <span
+                style={{fontWeight: "bold", color: "#0003B4", marginBottom: "5px"}}
+                >SIREF v2 {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
             </Link>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>
@@ -73,8 +90,18 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                         </ul>
                         
                         <div className="logout-btn">
-                            <Button label="Deconnexion" severity="danger" />
-                            </div>
+                            <Link 
+                            href={"/auth/login"}
+                            onClick={() => {
+                                // console.log('Deconnexion')
+                            }}
+                            >
+                                <Button
+                                label="Deconnexion"
+                                severity="danger"
+                                />
+                            </Link>
+                        </div>
 
                     </div>
                 </div>}

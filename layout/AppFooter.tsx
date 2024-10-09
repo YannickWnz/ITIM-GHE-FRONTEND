@@ -8,9 +8,16 @@ const AppFooter = () => {
 
     return (
         <div className="layout-footer">
-            <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Logo" height="20" className="mr-2" />
-            by
-            <span className="font-medium ml-2">PrimeReact</span>
+            <img 
+            // src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} 
+            src={`/layout/images/oni_logo.png`}
+            alt="Logo" 
+            height="40" 
+            className="mr-2" 
+            />
+            Powered by
+            {/* <span className="font-medium ml-2">ONI</span> */}
+            <span className="font-bold ml-1">ONI</span>
         </div>
     );
 };

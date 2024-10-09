@@ -6,6 +6,9 @@ import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import Link from 'next/link';
 import { AppMenuItem } from '@/types';
+import { Dropdown } from 'primereact/dropdown';
+import { PiStudent } from "react-icons/pi";
+
 
 // react icons imports 
 import { BsClipboardDataFill } from "react-icons/bs";
@@ -25,6 +28,34 @@ const AppMenu = () => {
                     label: 'Mise a jour des donnees', 
                     icon: 'pi pi-fw pi-file-edit',
                     to: '/donnees-ref',
+                    // items: [
+                    //     { label: 'Ecoles', icon: 'pi pi-fw pi-users', to: '/ecoles' },
+                    //     { label: 'Classes', icon: 'pi pi-fw pi-users', to: '/classes' },
+                    //     { label: 'Cycles', icon: 'pi pi-fw pi-users', to: '/cycles' },
+                    //     { label: 'Niveaux', icon: 'pi pi-fw pi-users', to: '/niveaux' }
+                    // ]
+                },
+
+            ]
+        },
+        {
+            label: 'Prise en charge',
+            items: [
+                { 
+                    label: 'Etudiants', 
+                    icon: 'pi pi-fw pi-users',
+                    to: '/prise-en-charge-etudiant',
+                    // items: [
+                    //     { label: 'Ecoles', icon: 'pi pi-fw pi-users', to: '/ecoles' },
+                    //     { label: 'Classes', icon: 'pi pi-fw pi-users', to: '/classes' },
+                    //     { label: 'Cycles', icon: 'pi pi-fw pi-users', to: '/cycles' },
+                    //     { label: 'Niveaux', icon: 'pi pi-fw pi-users', to: '/niveaux' }
+                    // ]
+                },
+                { 
+                    label: 'Professeurs', 
+                    icon: 'pi pi-fw pi-users',
+                    to: '/prise-en-charge-professeur',
                     // items: [
                     //     { label: 'Ecoles', icon: 'pi pi-fw pi-users', to: '/ecoles' },
                     //     { label: 'Classes', icon: 'pi pi-fw pi-users', to: '/classes' },

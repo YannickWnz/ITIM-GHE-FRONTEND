@@ -8,6 +8,7 @@ import { Password } from 'primereact/password';
 import { LayoutContext } from '../../../../layout/context/layoutcontext';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
+import axios from 'axios';
 
 
 // import Toast message component
@@ -27,6 +28,24 @@ const LoginPage = () => {
         email: "",
         password: ""
     })
+
+    const submitLogin = async () => {
+        
+        const userData = {email, password}
+
+        console.log(userData)
+        return 
+
+        try {
+            
+            const reponse = await axios.post('http://localhost:3000/api/auth/login', userData)
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    }
 
     const showError = (errorMsg: string) => {
         // toast.current && toast.current.show({severity:'error', summary: 'Error', detail:'Message Content', life: 3000});
@@ -53,7 +72,21 @@ const LoginPage = () => {
                             {/* <Button label="Error" severity="danger" onClick={showError} /> */}
 
             <div className="flex flex-column align-items-center justify-content-center">
-                <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
+                {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" /> */}
+                <div 
+                className="flex align-center"
+                style={{width: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+                >
+                    <img
+                    src={`/layout/images/logo_itim.png`}
+                    alt="Sakai logo"
+                    className="mb-5 w-6rem flex-shrink-0"
+                    style={{ height: '4em', width: '', maxWidth: '100%'}}
+                    />
+                    <span
+                    style={{fontWeight: "bold", color: "#0003B4", marginBottom: "40px", marginLeft: "10px", fontSize: "2rem"}}
+                    >SIREF v2 {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                </div>
                 <div
                     style={{
                         borderRadius: '56px',
@@ -73,16 +106,17 @@ const LoginPage = () => {
                                 Email
                             </label>
                             <InputText 
-                            id="email1" 
-                            type="text" 
-                            placeholder="Email address" 
-                            className="w-full md:w-30rem mb-5" 
-                            style={{ padding: '1rem' }} 
-                            name="email"
-                            onChange={(e) => {
-                                handleFormInputChange(e)
-                                setEmail(e.target.value)
-                            }}
+                                id="email1" 
+                                type="text"
+                                value={email} 
+                                placeholder="Email address" 
+                                className="w-full md:w-30rem mb-5" 
+                                style={{ padding: '1rem' }} 
+                                name="email"
+                                onChange={(e) => {
+                                    handleFormInputChange(e)
+                                    setEmail(e.target.value)
+                                }}
                             />
 
                             <label htmlFor="password1" className="block text-900 font-medium text-xl mb-2">
@@ -94,7 +128,6 @@ const LoginPage = () => {
                             value={password} 
                             name="password"
                             onChange={(e) => {
-                                setPassword(e.target.value)
                                 handleFormInputChange(e)
                                 setPassword(e.target.value)
                             }} 
@@ -117,14 +150,16 @@ const LoginPage = () => {
                             <Button 
                                 label="Connexion" 
                                 className="w-full p-3 text-xl" 
-                                onClick={
-                                    () => {
-                                        // router.push('/')
+                                onClick={() => {
                                         if(!loginInfos.email.trim()) {
                                             showError('Veuillez saisir votre email!')
+                                            return;
                                         } else if(!loginInfos.password.trim()) {
                                             showError('Veuillez saisir votre mot de passe!')
+                                            return;
                                         }
+                                        submitLogin()
+                                        router.push('/')
                                     }
                                 }
                             ></Button>
