@@ -317,10 +317,17 @@ function DonneesRef() {
              donneesRefPopUpState 
              &&
              <DonneesRefPopUp 
-             donnesRef={selectedDonneesRef}
-             setDonneesRef={setSelectedDonneesRef}
-             popUpState={donneesRefPopUpState}
-             setPopUpState={setDonneesRefPopUpState}
+                // passing selected donnees ref to the pop up (ex: Promotion, Annee Academique, Filiere, etc)
+                donnesRef={selectedDonneesRef}
+
+                // padding setter function so it be emptied when popup is closed
+                setDonneesRef={setSelectedDonneesRef}
+
+                // popup state allow to toggle on\off the popup
+                popUpState={donneesRefPopUpState}
+                
+                // popup state function setter 
+                setPopUpState={setDonneesRefPopUpState}
              />
         }
         {/* donnees referentielles pop up ends */}

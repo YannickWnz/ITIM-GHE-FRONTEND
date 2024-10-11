@@ -116,38 +116,19 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     const [products, setProducts] = useState([
         {
-            code: 'CODE1',
-            lib: '1ere Annee Informatique',
-            // edit: <div className="icons-wrapper">
-            //         <i 
-            //         className="pi pi-file-edit" 
-            //         style={{ fontSize: '1.1rem' }}
-            //         onClick={() => {
-            //             setEditRefData(true)
-            //             show('top')
-            //         }}
-            //         ></i>
-            //         <i 
-            //         className="pi pi-trash" 
-            //         style={{ fontSize: '1.1rem' }}
-            //         onClick={() => {
-            //             confirmDelete()
-            //         }}
-            //         >
-
-            //         </i>
-            //     </div>
+            code: '001',
+            lib: '1ere Annee Informatique'
         },
         {
-            code: 'CODE2',
+            code: '002',
             lib: 'Exemple 2'
         },
         {
-            code: 'CODE3',
+            code: '003',
             lib: 'Exemple 3'
         },
         {
-            code: 'CODE4',
+            code: '004',
             lib: 'Exemple 4'
         },
 
@@ -161,14 +142,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [newDataValue, seNewDataValue] = useState<string>('')
     
 
-    
-    useEffect(() => {
-        // ProductService.getProductsSmall().then(data => setProducts(data));
-    }, []);
 
 
-
-    const footerContent = editRefData ? (
+    const footerContent = isEditFormVisible ? (
         <div>
             <Button label="Annulez" icon="pi pi-times" onClick={() => {
                 setEditFormState(false)
@@ -224,8 +200,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             return
         }
     }
-
-
     
     const show = (position: any) => {
         setPosition(position);
@@ -257,7 +231,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
         
             {/* dialog containing form input that edit existing donnees referentielles */}
-            {editRefData 
+            {isEditFormVisible
                 && 
                 <Dialog 
                 header="Modification" 
@@ -274,7 +248,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         setValue(e.target.value)
                         } 
                         className='w-full outline-none'
-                        defaultValue={'1ere Annee Informatique' || value}
+                        // defaultValue={'1ere Annee Informatique' || value}
+                        defaultValue={value}
                     />
                 </Dialog>
             }
@@ -339,7 +314,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             <Column field="lib" header="Lib" style={{ width: "25%"}} ></Column>
                             <Column field="edit" header="" style={{ width: "25%", textAlign: 'center'}} ></Column>
                         </DataTable> */}
-                        <TableData />
+                        <TableData 
+                            data={products}
+                            isEditFormVisible={isEditFormVisible}
+                            setEditFormState={setEditFormState}
+                            functionSettingEditFormPosition={show}
+                            functionSettingEditFormInputValue={setValue}
+                        />
                     </div>
                     {/* <ul className='p-0'>
                         <div className='data-wrapper flex'>
