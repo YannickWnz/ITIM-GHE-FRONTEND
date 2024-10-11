@@ -32,13 +32,22 @@ const LoginPage = () => {
     const submitLogin = async () => {
         
         const userData = {email, password}
+        
+        const userInfo = {
+            code: "VM010",
+            password: "000"
+        }
 
-        console.log(userData)
-        return 
+        // console.log(userData)
+        // return 
 
         try {
             
-            const reponse = await axios.post('http://localhost:3000/api/auth/login', userData)
+            const response = await axios.post('http://localhost:8080/login', userInfo)
+            console.log(response.data)
+            if(response.status === 200) {
+                // router.push('/')
+            }
 
         } catch (error) {
             console.log(error)
@@ -159,7 +168,7 @@ const LoginPage = () => {
                                             return;
                                         }
                                         submitLogin()
-                                        router.push('/')
+                                        // router.push('/')
                                     }
                                 }
                             ></Button>
