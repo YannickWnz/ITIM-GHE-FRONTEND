@@ -1,14 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import { ProductService } from '../../demo/service/ProductService';
+// import { ProductService } from '../../../../demo/service/ProductService';
+
+
 // prime react icons import
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 
 // css import
 import '../../styles/components/DonneesRefPopUp.scss'
+import { TableData } from '../DataTable/DataTable';
+
+interface Product {
+    id: string;
+    code: string;
+    name: string;
+    description: string;
+    image: string;
+    price: number;
+    category: string;
+    quantity: number;
+    inventoryStatus: string;
+    rating: number;
+}
 
 
 type DonneesRefPopUpProps = {
@@ -17,6 +38,14 @@ type DonneesRefPopUpProps = {
     setDonneesRef:  React.Dispatch<React.SetStateAction<string>>
     setPopUpState:  React.Dispatch<React.SetStateAction<boolean>>
 }
+
+type ProductList = {
+    code: string;
+    lib: string;
+}
+
+type updatedList = ProductList & {edit: JSX.Element}
+
 
 export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonneesRef}: DonneesRefPopUpProps) => {
 
@@ -33,12 +62,110 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [changesConfirmed, setChangesConfirmed] = useState(false)
     const [toastState, setToastState] = useState(false)
 
+    const productList = [
+        {
+            code: '1000',
+            lib: 'Exemple 1'
+        },
+        {
+            code: '1001',
+            lib: 'Exemple 2'
+        },
+        {
+            code: '1002',
+            lib: 'Exemple 3'
+        },
+        {
+            code: '1003',
+            lib: 'Exemple 4'
+        },
+    ]
+
+    const [tableData, setData] = useState<updatedList[]>([])
+
+
+    useEffect(() => {
+
+        const updatedUsers = productList.map(data => ({
+            ...data,
+            edit: <div className="icons-wrapper">
+                    <i 
+                    className="pi pi-file-edit" 
+                    style={{ fontSize: '1.1rem' }}
+                    onClick={() => {
+                        setEditRefData(true)
+                        show('top')
+                        console.log(data.code)
+                    }}
+                    ></i>
+                    <i 
+                    className="pi pi-trash" 
+                    style={{ fontSize: '1.1rem' }}
+                    onClick={() => {
+                        confirmDelete()
+                    }}
+                    >
+
+                    </i>
+                </div>
+          }));
+
+          setData(updatedUsers)
+        
+    }, [])
+
+    const [products, setProducts] = useState([
+        {
+            code: 'CODE1',
+            lib: '1ere Annee Informatique',
+            // edit: <div className="icons-wrapper">
+            //         <i 
+            //         className="pi pi-file-edit" 
+            //         style={{ fontSize: '1.1rem' }}
+            //         onClick={() => {
+            //             setEditRefData(true)
+            //             show('top')
+            //         }}
+            //         ></i>
+            //         <i 
+            //         className="pi pi-trash" 
+            //         style={{ fontSize: '1.1rem' }}
+            //         onClick={() => {
+            //             confirmDelete()
+            //         }}
+            //         >
+
+            //         </i>
+            //     </div>
+        },
+        {
+            code: 'CODE2',
+            lib: 'Exemple 2'
+        },
+        {
+            code: 'CODE3',
+            lib: 'Exemple 3'
+        },
+        {
+            code: 'CODE4',
+            lib: 'Exemple 4'
+        },
+
+    ]);
+
     // state for new donnees referentielles form
     const [newDonneesRefFormState, setNewDonneesRefFormState] = useState(false)
 
     const [isAddNewDataFormVisible, setAddNewDataFormState] = useState(false)
 
     const [newDataValue, seNewDataValue] = useState<string>('')
+    
+
+    
+    useEffect(() => {
+        // ProductService.getProductsSmall().then(data => setProducts(data));
+    }, []);
+
 
 
     const footerContent = editRefData ? (
@@ -51,7 +178,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 label="Confirmez" 
                 icon="pi pi-check" 
                 onClick={() => {
-                    setEditFormState(false)
+                    setEditFormState(false) 
                     setEditRefData(false)
                     showSuccess('Mis a jour effectue')
                 }} 
@@ -127,6 +254,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     return (
         <>
+
         
             {/* dialog containing form input that edit existing donnees referentielles */}
             {editRefData 
@@ -195,7 +323,25 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             />
                         </span>
                     </div>
-                    <ul className='p-0'>
+
+                    <div className="">
+                        {/* <DataTable 
+                        value={products} 
+                        size='small' 
+                        tableStyle={{ minWidth: '20rem' }}
+                        style={{
+                            borderRadius: '10px', 
+                            // border: '1px solid red',
+                            overflow: 'hidden'
+                        }}
+                        >
+                            <Column field="code" header="Code" style={{ width: "25%"}} ></Column>
+                            <Column field="lib" header="Lib" style={{ width: "25%"}} ></Column>
+                            <Column field="edit" header="" style={{ width: "25%", textAlign: 'center'}} ></Column>
+                        </DataTable> */}
+                        <TableData />
+                    </div>
+                    {/* <ul className='p-0'>
                         <div className='data-wrapper flex'>
                             <li className='list-none'>Exemple Donnee Referentielle 1</li>
                             <div className="icons-wrapper">
@@ -225,7 +371,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 <i className="pi pi-trash" style={{ fontSize: '1.1rem' }}></i>
                             </div>
                         </div>
-                    </ul>
+                    </ul> */}
                 </div>
 
             </Dialog>
