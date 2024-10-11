@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Demo, ChartDataState } from '@/types';
 import { ChartData, ChartOptions } from 'chart.js';
 import './main.scss'
+import axios from 'axios';
 
 const documentStyle = getComputedStyle(document.documentElement);
 const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
@@ -53,6 +54,30 @@ const Dashboard = () => {
 
     const [lineChartData, setLineChartData] = useState({});
     const [lineChartOptions, setLineChartOptions] = useState({});
+
+    const getUserData = async () => {
+
+        try {
+
+            let token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJWTTAxMCIsImlhdCI6MTcyODU3MDMyMCwiZXhwIjoxNzI4NjU2NzIwfQ.ufbafR4bgrCT3lsdY2nve-vBWwMjJLZQRAbW-8KLNz0'
+
+            // const response = await axios.get('http://localhost:8080/api/getStudent')
+            const response = await axios.get('http://localhost:8080/api/getStudent', {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Add the token in the Authorization header
+                }
+            })
+            console.log(response.data, token)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    useEffect(() => {
+        getUserData()
+    }, [])
 
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
