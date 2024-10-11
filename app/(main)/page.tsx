@@ -76,7 +76,7 @@ const Dashboard = () => {
     }
 
     useEffect(() => {
-        getUserData()
+        // getUserData()
     }, [])
 
     const applyLightTheme = () => {

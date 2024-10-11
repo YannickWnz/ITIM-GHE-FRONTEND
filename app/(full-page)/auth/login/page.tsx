@@ -167,8 +167,8 @@ const LoginPage = () => {
                                             showError('Veuillez saisir votre mot de passe!')
                                             return;
                                         }
-                                        submitLogin()
-                                        // router.push('/')
+                                        // submitLogin()
+                                        router.push('/')
                                     }
                                 }
                             ></Button>
