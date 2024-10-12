@@ -14,10 +14,10 @@ import { ChartData, ChartOptions } from 'chart.js';
 import './main.scss'
 import axios from 'axios';
 
-const documentStyle = getComputedStyle(document.documentElement);
-const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
-const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#dfe7ef';
-const textColor = documentStyle.getPropertyValue('--text-color') || '#495057';
+// const documentStyle = getComputedStyle(document.documentElement);''
+// const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary') || '#6c757d';
+// const surfaceBorder = documentStyle.getPropertyValue('--surface-border') || '#dfe7ef';
+// const textColor = documentStyle.getPropertyValue('--text-color') || '#495057';
 
 
 const lineData: ChartData = {
@@ -75,9 +75,9 @@ const Dashboard = () => {
 
     }
 
-    useEffect(() => {
-        // getUserData()
-    }, [])
+    // useEffect(() => {
+    //     // getUserData()
+    // }, [])
 
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
