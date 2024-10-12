@@ -38,11 +38,6 @@ const LoginPage = () => {
             password: "000"
         }
 
-        // test
-
-        // console.log(userData)
-        // return 
-
         try {
             
             const response = await axios.post('http://localhost:8080/login', userInfo)
@@ -114,13 +109,14 @@ const LoginPage = () => {
 
                         <div>
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
-                                Email
+                                {/* Email */}
+                                Username
                             </label>
                             <InputText 
                                 id="email1" 
                                 type="text"
                                 value={email} 
-                                placeholder="Email address" 
+                                placeholder="Username" 
                                 className="w-full md:w-30rem mb-5" 
                                 style={{ padding: '1rem' }} 
                                 name="email"
@@ -142,7 +138,7 @@ const LoginPage = () => {
                                 handleFormInputChange(e)
                                 setPassword(e.target.value)
                             }} 
-                            placeholder="Password" 
+                            placeholder="Mot de passe" 
                             toggleMask 
                             className="w-full mb-5" 
                             inputClassName="w-full p-3 md:w-30rem"
