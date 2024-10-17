@@ -99,7 +99,7 @@ const LoginPage = () => {
                     />
                     <span
                     style={{fontWeight: "bold", color: "#0003B4", marginBottom: "40px", marginLeft: "10px", fontSize: "2rem"}}
-                    >SIREF v2 {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                    >SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
                 </div>
                 <div
                     style={{
@@ -151,15 +151,16 @@ const LoginPage = () => {
                             toggleMask 
                             className="w-full mb-5" 
                             inputClassName="w-full"
-                            style={{ border: "", padding: ".7rem !important" }} 
+                            style={{ border: "", padding: "",  }} 
                             ></Password>
 
-                            <div className="flex align-items-center justify-content-between mb-5 gap-5">
+                            <div className="flex align-items-center justify-content-between border-[red] mb-5 gap-5">
                                 <div className="flex align-items-center">
                                     <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
                                     <label htmlFor="rememberme1">Se souvenir de moi</label>
                                 </div>
-                                <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                                <a className="font-medium no-underline ml-2 text-right cursor-pointer" 
+                                style={{ color: 'var(--primary-color)' }}>
                                     {/* Forgot password? */}
                                     Mot de passe oublié?
                                 </a>
