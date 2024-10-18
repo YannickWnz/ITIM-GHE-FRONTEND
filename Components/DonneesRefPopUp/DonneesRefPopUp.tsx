@@ -39,12 +39,12 @@ type DonneesRefPopUpProps = {
     setPopUpState:  React.Dispatch<React.SetStateAction<boolean>>
 }
 
-type ProductList = {
-    code: string;
-    lib: string;
-}
+// type ProductList = {
+//     code: string;
+//     lib: string;
+// }
 
-type updatedList = ProductList & {edit: JSX.Element}
+// type updatedList = ProductList & {edit: JSX.Element}
 
 
 export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonneesRef}: DonneesRefPopUpProps) => {
@@ -62,57 +62,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [changesConfirmed, setChangesConfirmed] = useState(false)
     const [toastState, setToastState] = useState(false)
 
-    const productList = [
-        {
-            code: '1000',
-            lib: 'Exemple 1'
-        },
-        {
-            code: '1001',
-            lib: 'Exemple 2'
-        },
-        {
-            code: '1002',
-            lib: 'Exemple 3'
-        },
-        {
-            code: '1003',
-            lib: 'Exemple 4'
-        },
-    ]
-
-    const [tableData, setData] = useState<updatedList[]>([])
-
-
-    useEffect(() => {
-
-        const updatedUsers = productList.map(data => ({
-            ...data,
-            edit: <div className="icons-wrapper">
-                    <i 
-                    className="pi pi-file-edit" 
-                    style={{ fontSize: '1.1rem' }}
-                    onClick={() => {
-                        setEditRefData(true)
-                        show('top')
-                        console.log(data.code)
-                    }}
-                    ></i>
-                    <i 
-                    className="pi pi-trash" 
-                    style={{ fontSize: '1.1rem' }}
-                    onClick={() => {
-                        confirmDelete()
-                    }}
-                    >
-
-                    </i>
-                </div>
-          }));
-
-          setData(updatedUsers)
-        
-    }, [])
+    // fonction ajoutant les nouvelles donnees referentielles
+    const handleAddNewDonneesRef = () => {}
+    
+    // fonction en charge de la recuperation des donnees referentielles existantes
+    const handleGetDonneesRef = () => {}
 
     const [products, setProducts] = useState([
         {
@@ -140,9 +94,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [isAddNewDataFormVisible, setAddNewDataFormState] = useState(false)
 
     const [newDataValue, seNewDataValue] = useState<string>('')
-    
-
-
 
     const footerContent = isEditFormVisible ? (
         <div>
@@ -179,8 +130,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut etre vide`, life: 3000});
                         return
                     }
-                    setNewDonneesRefFormState(false)
+                    // alert(newDataValue)
                     showSuccess('Donnee creee avec succes')
+                    seNewDataValue('')
+                    setNewDonneesRefFormState(false)
+                    // return
                 }} 
                 autoFocus 
             />
