@@ -44,23 +44,23 @@ export const TableData = (
                                 <td>
                                     <div className="icons-wrapper">
                                         <i
-                                        className="pi pi-file-edit"
-                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                                        onClick={() => {
-                                            // setEditRefData(true)
-                                            // show('top')
-                                            setEditFormState(true)
-                                            functionSettingEditFormPosition('top')
-                                            console.log('editing ...')
-                                            functionSettingEditFormInputValue(product.lib)
-                                        }}
+                                            className="pi pi-file-edit"
+                                            style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                            onClick={() => {
+                                                // setEditRefData(true)
+                                                // show('top')
+                                                setEditFormState(true)
+                                                functionSettingEditFormPosition('top')
+                                                console.log('editing ...')
+                                                functionSettingEditFormInputValue(product.lib)
+                                            }}
                                         ></i>
                                         <i
-                                        className="pi pi-trash"
-                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
-                                        onClick={() => {
-                                            // confirmDelete()
-                                        }}
+                                            className="pi pi-trash"
+                                            style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                            onClick={() => {
+                                                // confirmDelete()
+                                            }}
                                         >
                                         </i>
                                     </div>
