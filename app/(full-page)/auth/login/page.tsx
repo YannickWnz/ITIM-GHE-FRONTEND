@@ -10,6 +10,9 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import axios from 'axios';
 
+// css import
+import '../../../../styles/pages/login.scss';
+
 
 // import Toast message component
 import { Toast } from 'primereact/toast';
@@ -37,11 +40,6 @@ const LoginPage = () => {
             code: "VM010",
             password: "000"
         }
-
-        // test
-
-        // console.log(userData)
-        // return 
 
         try {
             
@@ -75,7 +73,7 @@ const LoginPage = () => {
 
     }
 
-    const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
+    const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden login-form-container', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
 
     return (
         <div className={containerClassName}>
@@ -86,7 +84,12 @@ const LoginPage = () => {
                 {/* <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" /> */}
                 <div 
                 className="flex align-center"
-                style={{width: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+                style={{
+                    width: '400px', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center'
+                }}
                 >
                     <img
                     src={`/layout/images/logo_itim.png`}
@@ -96,7 +99,7 @@ const LoginPage = () => {
                     />
                     <span
                     style={{fontWeight: "bold", color: "#0003B4", marginBottom: "40px", marginLeft: "10px", fontSize: "2rem"}}
-                    >SIREF v2 {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
+                    >SYSGHECO {/* Systeme de Gestion des Honoraires et Ecolages */ }</span>
                 </div>
                 <div
                     style={{
@@ -105,24 +108,26 @@ const LoginPage = () => {
                         background: 'linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)'
                     }}
                 >
-                    <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
+                    <div className="w-full surface-card " style={{ borderRadius: '53px', padding: "60px" }}>
                         {/* <div className="text-center mb-5">
                             <img src="/demo/images/login/avatar.png" alt="Image" height="50" className="mb-3" />
                             <div className="text-900 text-3xl font-medium mb-3">Welcome, Isabel!</div>
                             <span className="text-600 font-medium">Sign in to continue</span>
                         </div> */}
 
-                        <div>
+                        <div style={{ border: "" }}>
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
-                                Email
+                                {/* Email */}
+                                Username
                             </label>
                             <InputText 
                                 id="email1" 
                                 type="text"
                                 value={email} 
-                                placeholder="Email address" 
+                                placeholder="Username" 
                                 className="w-full md:w-30rem mb-5" 
-                                style={{ padding: '1rem' }} 
+                                style={{ padding: '.7rem' }} 
+                                // style={{ padding: '1rem' }} 
                                 name="email"
                                 onChange={(e) => {
                                     handleFormInputChange(e)
@@ -142,18 +147,20 @@ const LoginPage = () => {
                                 handleFormInputChange(e)
                                 setPassword(e.target.value)
                             }} 
-                            placeholder="Password" 
+                            placeholder="Mot de passe" 
                             toggleMask 
                             className="w-full mb-5" 
-                            inputClassName="w-full p-3 md:w-30rem"
+                            inputClassName="w-full"
+                            style={{ border: "", padding: "",  }} 
                             ></Password>
 
-                            <div className="flex align-items-center justify-content-between mb-5 gap-5">
+                            <div className="flex align-items-center justify-content-between border-[red] mb-5 gap-5">
                                 <div className="flex align-items-center">
                                     <Checkbox inputId="rememberme1" checked={checked} onChange={(e) => setChecked(e.checked ?? false)} className="mr-2"></Checkbox>
                                     <label htmlFor="rememberme1">Se souvenir de moi</label>
                                 </div>
-                                <a className="font-medium no-underline ml-2 text-right cursor-pointer" style={{ color: 'var(--primary-color)' }}>
+                                <a className="font-medium no-underline ml-2 text-right cursor-pointer" 
+                                style={{ color: 'var(--primary-color)' }}>
                                     {/* Forgot password? */}
                                     Mot de passe oublié?
                                 </a>

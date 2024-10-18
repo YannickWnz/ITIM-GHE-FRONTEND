@@ -57,7 +57,6 @@ function DonneesRef() {
 
     const [selectedDonneesRef, setSelectedDonneesRef] = useState<string>('')
 
-
     const [editRefData, setEditRefData] = useState<boolean>(false)
 
     const [classesDonneesRefPopUp, setClasseDonneesRefPopUp] = useState<boolean>(false)
@@ -87,11 +86,8 @@ function DonneesRef() {
 
     const accept = () => {
         deleteToast.current && deleteToast.current.show({ severity: 'info', summary: 'Suppresion reussie', detail: 'Donnees supprimer avec succes', life: 3000 });
-    }   
-    // const reject = () => {
-    //     toast.current && toast.current.show({ severity: 'warn', summary: 'Rejected', detail: 'You have rejected ', life: 3000 });
-    // }                
-
+    }       
+    
     const confirmDelete = () => {
         confirmDialog({
             message: 'Do you want to delete this record?',
