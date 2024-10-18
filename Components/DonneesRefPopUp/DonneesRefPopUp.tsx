@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { ProductService } from '../../demo/service/ProductService';
 // import { ProductService } from '../../../../demo/service/ProductService';
@@ -12,11 +12,15 @@ import { Toast } from 'primereact/toast';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { InputSwitch, InputSwitchChangeEvent } from "primereact/inputswitch";
+import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton';
 
 
 // css import
 import '../../styles/components/DonneesRefPopUp.scss'
 import { TableData } from '../DataTable/DataTable';
+import axios from 'axios';
+import { cp } from 'fs';
 
 interface Product {
     id: string;
@@ -46,6 +50,20 @@ type DonneesRefPopUpProps = {
 
 // type updatedList = ProductList & {edit: JSX.Element}
 
+type fetchedDonneesRefsDataStructure = {
+    aacCode: number
+    aacCreerPar: String,
+    aacLib: String,
+    aacModifierPar: String, 
+    aacStatus: boolean 
+}
+
+enum typeOfDataFetchedEnums {
+    CodeAndLibType = 'CodeAndLib',
+    AnneeAcademiqueType = 'AnneeAcademiqueType',
+    RubriqueType = 'RubriqueType',
+}
+
 
 export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonneesRef}: DonneesRefPopUpProps) => {
 
@@ -61,6 +79,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     // const [position, setPosition] = useState<string>('center');
     const [changesConfirmed, setChangesConfirmed] = useState(false)
     const [toastState, setToastState] = useState(false)
+
+    const [fetchedDonneesRefsData, setFetchedDonneesRefsData] = useState<fetchedDonneesRefsDataStructure[]>([])
+
+    const [typeOfDataFetched, setTypeOfDataFetched] = useState('');
+
+    const [checked, setChecked] = useState<boolean>(false);
+
 
     // fonction ajoutant les nouvelles donnees referentielles
     const handleAddNewDonneesRef = () => {}
@@ -130,6 +155,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut etre vide`, life: 3000});
                         return
                     }
+                    addNewDonneesReferentielles()
                     // alert(newDataValue)
                     showSuccess('Donnee creee avec succes')
                     seNewDataValue('')
@@ -179,6 +205,80 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:`${details}`, life: 3000});
         // toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:'Mis a jour effectue', life: 3000});
     }
+
+    const fetchingAnneeAnneeAcademiqueData = async () => {
+
+        try {
+            const response = await axios.get('http://localhost:8080/api/anneeAcademique')
+
+            console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    const submitAnneeAcademiqueData = async () => {
+
+        let dataToBeSubmitted = {
+            aacLib: newDataValue,
+            aacCreerPar: "yannickwnz",
+            aacStatus: false
+        }
+
+        try {
+            
+            const response = await axios.post('http://localhost:8080/api/anneeAcademique', dataToBeSubmitted)
+
+            console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // fetching data
+    const fetchingDonnessReferentielles = async () => {
+
+        switch (donnesRef) {
+            case "Annee Academique":
+                setTypeOfDataFetched(typeOfDataFetchedEnums.AnneeAcademiqueType);
+                fetchingAnneeAnneeAcademiqueData()       
+                break;
+        
+            default:
+                break;
+        }
+
+    }
+
+    // function qui se charge de la creation de nouvelles donnees referentielles 
+    const addNewDonneesReferentielles = async () => {
+
+        switch (donnesRef) {
+            case "Annee Academique":
+                submitAnneeAcademiqueData()
+                break;
+        
+            default:
+                break;
+        }
+
+    }
+
+    useEffect(() => {
+        fetchingDonnessReferentielles()
+    }, [donnesRef])
+
+    
 
     return (
         <>
@@ -235,47 +335,99 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 header={`Mise a jour ${donnesRef}`} 
                 visible={visible} 
                 style={{ width: '50vw' }}
-                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef('') }}
+                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched('') }}
             >
                 
                 <div className="p-0 m-0 popup-container">
                     <div className="flex justify-end btn-wrapper">
                         <span>
                             <Button 
-                            // label={`Ajouter une ${donnesRef}`} 
-                            label={`Creer`} 
-                            icon="pi pi-plus-circle" 
-                            iconPos="right" 
-                            onClick={() => {
-                                setNewDonneesRefFormState(true)
-                            }}
+                                // label={`Ajouter une ${donnesRef}`} 
+                                label={`Creer`} 
+                                icon="pi pi-plus-circle" 
+                                iconPos="right" 
+                                onClick={() => {
+                                    setNewDonneesRefFormState(true)
+                                }}
                             />
                         </span>
                     </div>
 
                     <div className="">
-                        {/* <DataTable 
-                        value={products} 
-                        size='small' 
-                        tableStyle={{ minWidth: '20rem' }}
-                        style={{
-                            borderRadius: '10px', 
-                            // border: '1px solid red',
-                            overflow: 'hidden'
-                        }}
-                        >
-                            <Column field="code" header="Code" style={{ width: "25%"}} ></Column>
-                            <Column field="lib" header="Lib" style={{ width: "25%"}} ></Column>
-                            <Column field="edit" header="" style={{ width: "25%", textAlign: 'center'}} ></Column>
-                        </DataTable> */}
-                        <TableData 
+                        {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType && <TableData 
                             data={products}
                             isEditFormVisible={isEditFormVisible}
                             setEditFormState={setEditFormState}
                             functionSettingEditFormPosition={show}
                             functionSettingEditFormInputValue={setValue}
-                        />
+                        />}
+
+                        
+            
+
                     </div>
+                    {typeOfDataFetched === typeOfDataFetchedEnums.AnneeAcademiqueType && <div>
+                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                                <table>
+                                    <th>Code</th>
+                                    <th>Lib</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                    { fetchedDonneesRefsData?.map(data => {
+                                        return (
+                                            <tr className='font-bold' key={data.aacCode}>
+                                                <td>{data.aacCode}</td>
+                                                <td>{data.aacLib}</td>
+                                                <td>
+
+                                                    <ToggleButton 
+                                                        onLabel="Actif" 
+                                                        offLabel="Non actif" 
+                                                        onIcon="pi pi-check" 
+                                                        offIcon="pi pi-times" 
+                                                        checked={data.aacStatus ? true : false}
+                                                        onChange={(e:  ToggleButtonChangeEvent) => setChecked(e.value)} 
+                                                        className={`w-9rem h-2rem ${data.aacStatus && 'activeStatus'} `}
+                                                    />
+
+                                                </td>
+                                                <td>
+                                                    <div className="icons-wrapper">
+                                                        <i
+                                                            className="pi pi-file-edit"
+                                                            style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                            onClick={() => {
+                                                                // setEditRefData(true)
+                                                                // show('top')
+                                                                setEditFormState(true)
+                                                                // functionSettingEditFormPosition('top')
+                                                                console.log('editing ...')
+                                                                // functionSettingEditFormInputValue(product.lib)
+                                                            }}
+                                                        ></i>
+                                                        <i
+                                                            className="pi pi-trash"
+                                                            style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                            onClick={() => {
+                                                                // confirmDelete()
+                                                            }}
+                                                        >
+                                                        </i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                        
+                                    })}
+                                </table>
+                            </div>
+                            :
+                            <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion n'a encore ete ajoute. Cliquez sur creer pour ajouter une promotion</p>
+                            </div>
+                        }
+                    </div>}
+                    
                     {/* <ul className='p-0'>
                         <div className='data-wrapper flex'>
                             <li className='list-none'>Exemple Donnee Referentielle 1</li>
