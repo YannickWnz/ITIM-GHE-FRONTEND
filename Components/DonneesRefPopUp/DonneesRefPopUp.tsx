@@ -67,6 +67,8 @@ enum typeOfDataFetchedEnums {
 
 export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonneesRef}: DonneesRefPopUpProps) => {
 
+    const backendApi = process.env.NEXT_PUBLIC_BACKEND_API_URL
+
     const toast = useRef<Toast>(null);
     const deleteToast = useRef<Toast>(null);
     const emptyValueErrorToast = useRef<Toast>(null);

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 // react icons imports
 import { IoMdSchool } from "react-icons/io";
@@ -41,6 +41,8 @@ type DialogPositionType = {
 
 function DonneesRef() {
 
+    const backendApi = process.env.NEXT_PUBLIC_BACKEND_API_URL
+
     const toast = useRef<Toast>(null);
     const deleteToast = useRef<Toast>(null);
 
@@ -76,7 +78,6 @@ function DonneesRef() {
             }} autoFocus />
         </div>
     );
-
 
     
     const show = (position: any) => {
