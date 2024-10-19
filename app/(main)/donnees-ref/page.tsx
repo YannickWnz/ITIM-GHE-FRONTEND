@@ -41,7 +41,7 @@ type DialogPositionType = {
 
 function DonneesRef() {
 
-    const backendApi = process.env.NEXT_PUBLIC_BACKEND_API_URL
+    const backendApi = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 
     const toast = useRef<Toast>(null);
     const deleteToast = useRef<Toast>(null);
@@ -62,49 +62,6 @@ function DonneesRef() {
     const [editRefData, setEditRefData] = useState<boolean>(false)
 
     const [classesDonneesRefPopUp, setClasseDonneesRefPopUp] = useState<boolean>(false)
-
-    const footerContent = (
-        <div>
-            <Button label="Annulez" icon="pi pi-times" onClick={() => {
-                setEditFormState(false)
-                setEditRefData(false)
-            }} className="p-button-text" />
-            <Button label="Confirmez" icon="pi pi-check" onClick={() => {
-                setEditFormState(false)
-                setEditRefData(false)
-                // setChangesConfirmed(true);
-                setTimeout(() => setChangesConfirmed(false), 4000);
-                showSuccess('Mis a jour effectue')
-            }} autoFocus />
-        </div>
-    );
-
-    
-    const show = (position: any) => {
-        setPosition(position);
-        setEditFormState(true);
-    };
-
-    const accept = () => {
-        deleteToast.current && deleteToast.current.show({ severity: 'info', summary: 'Suppresion reussie', detail: 'Donnees supprimer avec succes', life: 3000 });
-    }       
-    
-    const confirmDelete = () => {
-        confirmDialog({
-            message: 'Do you want to delete this record?',
-            header: 'Delete Confirmation',
-            icon: 'pi pi-info-circle',
-            acceptClassName: 'p-button-danger',
-            accept,
-            // reject
-        });
-    };
-
-    const showSuccess = (details: string) => {
-        toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:`${details}`, life: 3000});
-        // toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:'Mis a jour effectue', life: 3000});
-    }
-
     
 
   return (
