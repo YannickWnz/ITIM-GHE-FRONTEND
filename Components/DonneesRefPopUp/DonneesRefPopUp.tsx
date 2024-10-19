@@ -52,9 +52,9 @@ type DonneesRefPopUpProps = {
 
 type fetchedDonneesRefsDataStructure = {
     aacCode: number
-    aacCreerPar: String,
-    aacLib: String,
-    aacModifierPar: String, 
+    aacCreerPar: string,
+    aacLib: string,
+    aacModifierPar: string, 
     aacStatus: boolean 
 }
 
@@ -74,7 +74,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [visible, setVisible] = useState(true);
     const [editRefData, setEditRefData] = useState(false)
     const [isEditFormVisible, setEditFormState] = useState(false);
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState<string>('');
+    const [updatedValue, setUpdatedValue] = useState<string>('');
+    const [updatedDataCode, setUpdatedDataCode] = useState<number | null>(null);
+    const [selectedDataCode, setSelectedDataCode] = useState<number | null>(null);
     const [position, setPosition] = useState<'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top');
     // const [position, setPosition] = useState<string>('center');
     const [changesConfirmed, setChangesConfirmed] = useState(false)
@@ -130,9 +133,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 label="Confirmez" 
                 icon="pi pi-check" 
                 onClick={() => {
+                    updateAnneeAcademiqueData()
                     setEditFormState(false) 
                     setEditRefData(false)
-                    showSuccess('Mis a jour effectue')
+                    showSuccess('Mise à jour effectuée')
                 }} 
                 autoFocus 
             />
@@ -152,15 +156,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 icon="pi pi-check" 
                 onClick={() => {
                     if(!newDataValue.trim()) {
-                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut etre vide`, life: 3000});
-                        return
+                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut être vide`, life: 3000});
+                        return;
                     }
                     addNewDonneesReferentielles()
-                    // alert(newDataValue)
-                    showSuccess('Donnee creee avec succes')
+                    showSuccess('Donnée créée avec succes')
                     seNewDataValue('')
                     setNewDonneesRefFormState(false)
-                    // return
                 }} 
                 autoFocus 
             />
@@ -187,13 +189,19 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     };
 
     const accept = () => {
-        deleteToast.current && deleteToast.current.show({ severity: 'info', summary: 'Suppresion reussie', detail: 'Donnees supprimer avec succes', life: 3000 });
+
+        deleteDonneesReferentiellesData()
+
+        deleteToast.current 
+        && 
+        deleteToast.current.show({ severity: 'info', summary: 'Suppresion reussie', detail: 'Données supprimer avec succes', life: 3000 });
     }   
+
 
     const confirmDelete = () => {
         confirmDialog({
-            message: 'Do you want to delete this record?',
-            header: 'Delete Confirmation',
+            message: 'Êtes vous sûre de vouloir supprimer cette donnée?',
+            header: 'Confirmez la suppression',
             icon: 'pi pi-info-circle',
             acceptClassName: 'p-button-danger',
             accept,
@@ -206,6 +214,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         // toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:'Mis a jour effectue', life: 3000});
     }
 
+    // function qui se charge de fetch toutes les annee academiques
     const fetchingAnneeAnneeAcademiqueData = async () => {
 
         try {
@@ -222,6 +231,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     }
 
+    // function qui se charge de la creation des annees academique
     const submitAnneeAcademiqueData = async () => {
 
         let dataToBeSubmitted = {
@@ -233,6 +243,32 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         try {
             
             const response = await axios.post('http://localhost:8080/api/anneeAcademique', dataToBeSubmitted)
+
+            console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la mise a jour des annees academique
+    const updateAnneeAcademiqueData = async () => {
+
+        if(updatedDataCode === null) return;
+
+        let dataToBeSubmitted = {
+            aacLib: updatedValue,
+            aacCreerPar: "yannickwnz",
+            aacStatus: false
+        }
+
+        try {
+            
+            const response = await axios.put(`http://localhost:8080/api/anneeAcademique/${updatedDataCode}`, dataToBeSubmitted)
 
             console.log(response.data)
             if(response.status === 200) {
@@ -274,11 +310,31 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     }
 
+    const deleteDonneesReferentiellesData = async () => {
+
+        if(selectedDataCode === null) return;
+        
+        try {
+            
+            const response = await axios.delete(`http://localhost:8080/api/anneeAcademique/${selectedDataCode}`)
+
+            console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                setSelectedDataCode(null)
+            }
+
+        } catch (error) {
+            console.log(error)
+            setSelectedDataCode(null)
+        }
+
+    }
+
     useEffect(() => {
         fetchingDonnessReferentielles()
     }, [donnesRef])
 
-    
 
     return (
         <>
@@ -299,11 +355,15 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     <InputText 
                         // value={value} 
                         onChange={(e) => 
-                        setValue(e.target.value)
+                            {
+                                // setValue(e.target.value)
+                                setUpdatedValue(e.target.value)
+                            }
                         } 
                         className='w-full outline-none'
                         // defaultValue={'1ere Annee Informatique' || value}
-                        defaultValue={value}
+                        // defaultValue={value}
+                        defaultValue={updatedValue}
                     />
                 </Dialog>
             }
@@ -335,7 +395,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 header={`Mise a jour ${donnesRef}`} 
                 visible={visible} 
                 style={{ width: '50vw' }}
-                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched('') }}
+                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched('');  }}
             >
                 
                 <div className="p-0 m-0 popup-container">
@@ -397,19 +457,17 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                                             className="pi pi-file-edit"
                                                             style={{ fontSize: '1.2rem', marginRight: '1rem' }}
                                                             onClick={() => {
-                                                                // setEditRefData(true)
-                                                                // show('top')
                                                                 setEditFormState(true)
-                                                                // functionSettingEditFormPosition('top')
-                                                                console.log('editing ...')
-                                                                // functionSettingEditFormInputValue(product.lib)
+                                                                setUpdatedValue(data.aacLib)
+                                                                setUpdatedDataCode(data.aacCode)
                                                             }}
                                                         ></i>
                                                         <i
                                                             className="pi pi-trash"
                                                             style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
                                                             onClick={() => {
-                                                                // confirmDelete()
+                                                                confirmDelete()
+                                                                setSelectedDataCode(data.aacCode)
                                                             }}
                                                         >
                                                         </i>
@@ -423,49 +481,18 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             </div>
                             :
                             <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
-                                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion n'a encore ete ajoute. Cliquez sur creer pour ajouter une promotion</p>
+                                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion créée. Cliquez sur creer pour ajouter une promotion</p>
                             </div>
                         }
                     </div>}
                     
-                    {/* <ul className='p-0'>
-                        <div className='data-wrapper flex'>
-                            <li className='list-none'>Exemple Donnee Referentielle 1</li>
-                            <div className="icons-wrapper">
-                                <i 
-                                className="pi pi-file-edit" 
-                                style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    setEditRefData(true)
-                                    show('top')
-                                }}
-                                ></i>
-                                <i 
-                                className="pi pi-trash" 
-                                style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    confirmDelete()
-                                }}
-                                >
-
-                                </i>
-                            </div>
-                        </div>
-                        <div className='data-wrapper flex'>
-                            <li className='list-none'>Exemple Donnee Referentielle 2</li>
-                            <div className="icons-wrapper">
-                                <i className="pi pi-file-edit" style={{ fontSize: '1.1rem' }}></i>
-                                <i className="pi pi-trash" style={{ fontSize: '1.1rem' }}></i>
-                            </div>
-                        </div>
-                    </ul> */}
                 </div>
 
             </Dialog>
 
             {/* {changesConfirmed && <Toast ref={toast} />} */}
             { <Toast ref={toast} />}
-            {/* <Toast ref={deleteToast} /> */}
+            <Toast ref={deleteToast} />
         </>
     )
 
