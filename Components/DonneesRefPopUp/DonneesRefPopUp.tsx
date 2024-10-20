@@ -155,7 +155,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 label="Confirmez" 
                 icon="pi pi-check" 
                 onClick={() => {
-                    updateAnneeAcademiqueData()
+                    if(donnesRef === "Annee Academique") {
+                        updateAnneeAcademiqueData()
+                    }
+                    else if(donnesRef === "Promotion") {
+                        updataPromotionData()
+                    }
                     setEditFormState(false) 
                     setEditRefData(false)
                     showSuccess('Mise à jour effectuée')
@@ -203,7 +208,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             icon="pi pi-check" 
             onClick={() => {
                 if(isDataBeingDeleted) {
-                    deleteDonneesReferentiellesData()
+                    if(donnesRef === "Annee Academique") {
+                        deleteDonneesReferentiellesData()
+                    } else if (donnesRef === "Promotion") {
+                        deletePromotionData()
+                    }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
                     return
@@ -230,6 +239,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         setPosition(position);
         setEditFormState(true);
     };
+    
+    function resetCodeAndValue() {
+        setUpdatedDataCode(null)
+        setUpdatedValue('')
+        setSelectedDataCode(null)
+        setSelectedDonneesRefLib('')
+    }
 
     // function qui se charge de la mise a jour du status d'une annee academique
     const handleAnneeAcademiqueStatusChange = async () => {
@@ -300,9 +316,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             
             const response = await axios.post(`${backendApi}/api/promotion`, dataToBeSubmitted)
 
-            console.log(response.data)
+            // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
+                resetCodeAndValue()
             }
 
         } catch (error) {
@@ -310,6 +327,74 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         }
 
     }
+
+    // function qui se charge de la recuperation des promotions
+    const getAllPromotionData = async () => {
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/promotion`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la mise a jour des promotions
+    const updataPromotionData = async () => {
+
+        
+        let dataToBeSubmitted = {
+            proLib: updatedValue,
+            proModifierPar: "yannickwnz",
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/promotion/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                resetCodeAndValue()
+            }
+
+        } catch (error) {
+            console.log(error)
+            resetCodeAndValue()
+        }
+
+    }
+
+    // function qui se charge de la suppression des promotions
+    const deletePromotionData = async () => {
+
+        if(setSelectedDataCode === null) return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/promotion/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                resetCodeAndValue()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+            resetCodeAndValue()
+        }
+
+    }
+
 
     // function qui se charge de la creation des annees academique
     const submitAnneeAcademiqueData = async () => {
@@ -350,7 +435,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             
             const response = await axios.put(`http://localhost:8080/api/anneeAcademique/${updatedDataCode}`, dataToBeSubmitted)
 
-            console.log(response.data)
+            // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
             }
@@ -370,7 +455,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 fetchingAnneeAnneeAcademiqueData()       
                 break;
                 case "Promotion":
-                fetchingAnneeAnneeAcademiqueData()       
+                getAllPromotionData()       
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
         
@@ -410,7 +495,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
                 setSelectedDataCode(null)
-                showSuccess('Données supprimer avec succes')
+                showSuccess('Donnée supprimée avec succes')
             }
 
         } catch (error) {
@@ -435,7 +520,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 visible={visible} 
                 style={{ width: '30vw' }} 
                 onHide={() => {
-                    if (!isEditFormVisible) return; setEditFormState(false); setEditRefData(false) 
+                    if (!isEditFormVisible) return; setEditFormState(false); setEditRefData(false); resetCodeAndValue()
                 }} 
                 position={position}
                 footer={footerContent}>
@@ -525,6 +610,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 icon="pi pi-plus-circle" 
                                 iconPos="right" 
                                 onClick={() => {
+                                    fetchingAnneeAnneeAcademiqueData()
                                     setNewDonneesRefFormState(true)
                                 }}
                             />
@@ -630,7 +716,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 { fetchedDonneesRefsData?.map(data => {
                                     return (
                                         <tr className='font-bold' key={data.proCode}>
-                                            <td>{data.proLib}</td>
+                                            <td>{data.proCode}</td>
                                             <td>{data.proLib}</td>
                                             <td>
                                                 <div className="icons-wrapper">
@@ -639,12 +725,19 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                                         style={{ fontSize: '1.2rem', marginRight: '1rem' }}
                                                         onClick={() => {
                                                             setEditFormState(true)
+                                                            setUpdatedValue(data.proLib)
+                                                            setUpdatedDataCode(data.proCode)
                                                         }}
                                                     ></i>
                                                     <i
                                                         className="pi pi-trash"
                                                         style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
-                                                        onClick={() => {}}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.proCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
                                                     >
                                                     </i>
                                                 </div>
