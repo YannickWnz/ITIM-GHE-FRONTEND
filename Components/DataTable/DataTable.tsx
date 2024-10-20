@@ -70,35 +70,11 @@ export const TableData = (
             
                     })}
 
-                    {/* <tr className='font-bold'>
-                        <td>001</td>
-                        <td>Exemple Donnee 1</td>
-                        <td>
-                            <div className="icons-wrapper">
-                                <i
-                                className="pi pi-file-edit"
-                                style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                                onClick={() => {
-                                    // setEditRefData(true)
-                                    // show('top')
-                                }}
-                                ></i>
-                                <i
-                                className="pi pi-trash"
-                                style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
-                                onClick={() => {
-                                    // confirmDelete()
-                                }}
-                                >
-                                </i>
-                            </div>
-                        </td>
-                    </tr> */}
                 </table>
             </div>
             :
             <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
-                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion n'a encore ete ajoute. Cliquez sur creer pour ajouter une promotion</p>
+                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion ajoutee. Cliquez sur creer pour ajouter une promotion</p>
             </div>
         }
         </>

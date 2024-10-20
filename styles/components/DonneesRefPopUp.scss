@@ -103,3 +103,53 @@
 
     }
 }
+
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+td, th {
+// border: 1px solid #dddddd;
+text-align: left;
+text-align: center;
+padding: 8px;
+}
+
+td {
+    cursor: pointer;
+
+    span {
+        font-weight: bold;
+        // font-size: .9em;
+        color: #e67e22;
+        // color: #e74c3c;
+        // color: crimson;
+    }
+    span.rejected-statut {
+        // color: crimson !important; 
+        color: #e74c3c;
+    }
+
+
+}
+
+tr:nth-child(even) {
+background-color: #dddddd;
+background-color: #D0E1FD;
+}
+
+th {
+    background-color: #000;
+    background-color: #74b9ff;
+    background-color: #6266F1;
+    color: white;
+    font-size: 1em;
+    // color: #2196F3;
+    // border-radius: 10px 10px 0 0;
+}

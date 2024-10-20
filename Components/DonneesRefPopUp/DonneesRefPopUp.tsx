@@ -14,7 +14,8 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputSwitch, InputSwitchChangeEvent } from "primereact/inputswitch";
 import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton';
-
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+        
 
 // css import
 import '../../styles/components/DonneesRefPopUp.scss'
@@ -55,7 +56,9 @@ type fetchedDonneesRefsDataStructure = {
     aacCreerPar: string,
     aacLib: string,
     aacModifierPar: string, 
-    aacStatus: boolean 
+    aacStatus: boolean,
+    proCode: number,
+    proLib: string
 }
 
 enum typeOfDataFetchedEnums {
@@ -99,6 +102,20 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [confirmationDialogVisibility, setConfirmationDialogVisibility] = useState<boolean>(false)
     const [confirmationDialogMessage, setConfirmationDialogMessage] = useState<string>('')
 
+    const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
+    const [fetchedPromotionAnneeAcademique, setFetchedPromotionAnneeAcademique] = useState<fetchedDonneesRefsDataStructure[]>([])
+
+    // const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
+
+    const [selectedDonneesRefLib, setSelectedDonneesRefLib] = useState('');
+    const cities = [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' }
+    ];
+
     const [updateStatusData, setUpdateStatusData] = useState({
         newStatus: false,
         aacCode: 0
@@ -140,7 +157,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 label="Confirmez" 
                 icon="pi pi-check" 
                 onClick={() => {
-                    updateAnneeAcademiqueData()
+                    if(donnesRef === "Annee Academique") {
+                        updateAnneeAcademiqueData()
+                    }
+                    else if(donnesRef === "Promotion") {
+                        updataPromotionData()
+                    }
                     setEditFormState(false) 
                     setEditRefData(false)
                     showSuccess('Mise à jour effectuée')
@@ -188,7 +210,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             icon="pi pi-check" 
             onClick={() => {
                 if(isDataBeingDeleted) {
-                    deleteDonneesReferentiellesData()
+                    if(donnesRef === "Annee Academique") {
+                        deleteDonneesReferentiellesData()
+                    } else if (donnesRef === "Promotion") {
+                        deletePromotionData()
+                    }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
                     return
@@ -215,7 +241,15 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         setPosition(position);
         setEditFormState(true);
     };
+    
+    function resetCodeAndValue() {
+        setUpdatedDataCode(null)
+        setUpdatedValue('')
+        setSelectedDataCode(null)
+        setSelectedDonneesRefLib('')
+    }
 
+    // function qui se charge de la mise a jour du status d'une annee academique
     const handleAnneeAcademiqueStatusChange = async () => {
 
         try {
@@ -227,7 +261,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             
             const response = await axios.put(`${backendApi}/api/anneeAcademique/${updateStatusData.aacCode}`, dataToBeSubmitted)
 
-            console.log(response.data)
+            // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
                 if(updateStatusData.newStatus) {
@@ -254,9 +288,59 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const fetchingAnneeAnneeAcademiqueData = async () => {
 
         try {
-            const response = await axios.get('http://localhost:8080/api/anneeAcademique')
+            const response = await axios.get(`${backendApi}/api/anneeAcademique`)
 
-            console.log(response.data)
+            if(response.status === 200) {
+                if(donnesRef === "Promotion") {
+                    setFetchedPromotionAnneeAcademique(response.data)
+                    return
+                } else if(donnesRef === "Annee Academique") {
+                    setFetchedDonneesRefsData(response.data)
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la creation des promotions
+    const submitPromotionData = async () => {
+
+        let dataToBeSubmitted = {
+            proLib: newDataValue,
+            proCreerPar: "yannickwnz",
+            proAacCode: selectedAnneeAcademiqueCode
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/promotion`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
+                // resetCodeAndValue()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des promotions
+    const getAllPromotionData = async (aacCode: number | null) => {
+
+        if(aacCode === null) return;
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/promotion/${aacCode}`)
+
+            // console.log(response.data)
             if(response.status === 200) {
                 setFetchedDonneesRefsData(response.data)
             }
@@ -266,6 +350,58 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         }
 
     }
+
+    // function qui se charge de la mise a jour des promotions
+    const updataPromotionData = async () => {
+
+        
+        let dataToBeSubmitted = {
+            proLib: updatedValue,
+            proModifierPar: "yannickwnz",
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/promotion/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                // resetCodeAndValue()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
+            }
+
+        } catch (error) {
+            console.log(error)
+            resetCodeAndValue()
+        }
+
+    }
+
+    // function qui se charge de la suppression des promotions
+    const deletePromotionData = async () => {
+
+        if(setSelectedDataCode === null) return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/promotion/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                // resetCodeAndValue()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+            resetCodeAndValue()
+        }
+
+    }
+
 
     // function qui se charge de la creation des annees academique
     const submitAnneeAcademiqueData = async () => {
@@ -298,7 +434,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
         let dataToBeSubmitted = {
             aacLib: updatedValue,
-            aacCreerPar: "yannickwnz",
+            aacModifierPar: "yannickwnz",
             aacStatus: false
         }
 
@@ -306,7 +442,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             
             const response = await axios.put(`http://localhost:8080/api/anneeAcademique/${updatedDataCode}`, dataToBeSubmitted)
 
-            console.log(response.data)
+            // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
             }
@@ -325,6 +461,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 setTypeOfDataFetched(typeOfDataFetchedEnums.AnneeAcademiqueType);
                 fetchingAnneeAnneeAcademiqueData()       
                 break;
+                case "Promotion":
+                getAllPromotionData()       
+                fetchingAnneeAnneeAcademiqueData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
         
             default:
                 break;
@@ -338,6 +479,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         switch (donnesRef) {
             case "Annee Academique":
                 submitAnneeAcademiqueData()
+                break;
+
+            case "Promotion":
+                submitPromotionData()
                 break;
         
             default:
@@ -358,7 +503,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
                 setSelectedDataCode(null)
-                showSuccess('Données supprimer avec succes')
+                showSuccess('Donnée supprimée avec succes')
             }
 
         } catch (error) {
@@ -383,7 +528,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 visible={visible} 
                 style={{ width: '30vw' }} 
                 onHide={() => {
-                    if (!isEditFormVisible) return; setEditFormState(false); setEditRefData(false) 
+                    if (!isEditFormVisible) return; setEditFormState(false); setEditRefData(false); resetCodeAndValue()
                 }} 
                 position={position}
                 footer={footerContent}>
@@ -391,13 +536,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         // value={value} 
                         onChange={(e) => 
                             {
-                                // setValue(e.target.value)
                                 setUpdatedValue(e.target.value)
                             }
                         } 
                         className='w-full outline-none'
-                        // defaultValue={'1ere Annee Informatique' || value}
-                        // defaultValue={value}
                         defaultValue={updatedValue}
                     />
                 </Dialog>
@@ -407,36 +549,91 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             {/* dialog contenant l'input qui va creer une nouvelle donnee referentielle */}
             {newDonneesRefFormState 
                 && 
-                <Dialog 
-                header="Creer une nouvelle donnee" 
-                visible={visible}
-                style={{ width: '30vw' }} 
-                onHide={() => {
-                    if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false)
-                }} 
-                position={position}
-                footer={footerContent}>
-                    <InputText 
-                        value={newDataValue} 
-                        onChange={(e) => 
-                            seNewDataValue(e.target.value)
-                        } 
-                        className='w-full outline-none'
-                    />
-                </Dialog>
+                <>
+
+                    <Dialog 
+                    header="Creer une nouvelle donnee" 
+                    visible={visible}
+                    style={{ width: '40vw' }} 
+                    onHide={() => {
+                        if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib('')
+                    }} 
+                    position={position}
+                    footer={footerContent}>
+
+                        {/* {donnesRef === "Promotion" 
+                        && 
+                        <div 
+                            className="w-full flex justify-content-start mb-4"
+                        >
+                            <Dropdown 
+                                value={selectedDonneesRefLib} 
+                                onChange={(e: DropdownChangeEvent) => {
+                                    setSelectedDonneesRefLib(e.value)
+                                    console.log(e.target.value.aacCode)
+                                    setSelectedAnneeAcademiqueCode(e.target.value.aacCode)
+                                }} 
+                                options={fetchedPromotionAnneeAcademique} 
+                                // options={cities} 
+                                optionLabel="aacLib" 
+                                placeholder="Selectionnez une Annee Academique" 
+                                // className="w-full md:w-14rem"
+                                className="w-full"
+                            />
+                        </div>} */}
+
+                        <InputText 
+                            value={newDataValue} 
+                            onChange={(e) => 
+                                seNewDataValue(e.target.value)
+                            } 
+                            className='w-full outline-none'
+                        />
+                    </Dialog>
+                
+                </>
+
             }
 
             {/* dialog containing lists of selected donnees referentielles */}
             {/* dialog contenant la liste des donnees referentielles */}
             <Dialog 
-                header={`Mise a jour ${donnesRef}`} 
+                header={`Mise à jour ${donnesRef}`} 
                 visible={visible} 
                 style={{ width: '50vw' }}
-                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched('');  }}
+                // onHide est la fonction derriere l'icone X qui permet de fermer les fenetres qui affichent les donnees referentielles
+                // setPopUpState est la function qui permet l'affichage de la fenetre ... 
+                // setDonneesRef est la fonction qui contient le nom de la donnee ref qui a dynamique envoye depuis la page /donnees-ref
+                // setFetchedDonneesRefsData
+
+                onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched(''); setFetchedDonneesRefsData([]); }}
             >
                 
                 <div className="p-0 m-0 popup-container">
                     <div className="flex justify-end btn-wrapper">
+                        
+                        {donnesRef === "Promotion" && <div 
+                            className="w-full flex justify-content-start"
+                        >
+                            <Dropdown 
+                                value={selectedDonneesRefLib} 
+                                onChange={(e: DropdownChangeEvent) => {
+                                    setSelectedDonneesRefLib(e.value)
+                                    // setSelectedDataCode(e.target.value.aacCode)
+                                    console.log(e.target.value.aacCode)
+                                    setSelectedAnneeAcademiqueCode(e.target.value.aacCode)
+                                    getAllPromotionData(e.target.value.aacCode)
+
+                                }} 
+                                options={fetchedPromotionAnneeAcademique} 
+                                // options={cities} 
+                                optionLabel="aacLib" 
+                                placeholder="Selectionnez une Annee Academique" 
+                                // className="w-full md:w-14rem"
+                                className="w-[40%]"
+                            />
+                        </div>}
+
                         <span>
                             <Button 
                                 // label={`Ajouter une ${donnesRef}`} 
@@ -449,8 +646,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             />
                         </span>
                     </div>
-
-                    <div className="">
+ 
+                    {/* <div className="">
                         {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType && <TableData 
                             data={products}
                             isEditFormVisible={isEditFormVisible}
@@ -459,11 +656,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             functionSettingEditFormInputValue={setValue}
                         />}
 
-                    </div>
+                    </div> */}
 
                     {typeOfDataFetched === typeOfDataFetchedEnums.AnneeAcademiqueType && <div>
                         {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
-                                <table>
+                                <table className=''>
                                     <th>Code</th>
                                     <th>Lib</th>
                                     <th>Status</th>
@@ -491,11 +688,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                                         }} 
                                                         onClick={() => {
                                                             setConfirmationDialogVisibility(true)
-                                                            // console.log(data.aacStatus)
                                                             if(data.aacStatus) {
-                                                                setConfirmationDialogMessage('Etes vous sure de vouloir desactiver cette annee academique ?')
+                                                                setConfirmationDialogMessage('Êtes vous sûre de vouloir désactiver cette année académique ?')
                                                             } else {
-                                                                setConfirmationDialogMessage("Etes vous sure de vouloir activer cette annee academique? Toutes les autres annees seront automatiquement desactivees")
+                                                                setConfirmationDialogMessage("Êtes vous sûre de vouloir activer cette année academique? L'année en cours actuelle sera automatique désactiver")
                                                             }
                                                         }}
                                                         className={`w-9rem h-2rem ${data.aacStatus && 'activeStatus'} `}
@@ -519,7 +715,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                                             onClick={() => {
                                                                 setIsDataBeingDeleted(true)
                                                                 setSelectedDataCode(data.aacCode)
-                                                                // confirmDelete()
                                                                 setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
                                                                 setConfirmationDialogVisibility(true)
                                                             }}
@@ -535,10 +730,68 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             </div>
                             :
                             <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
-                                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion créée. Cliquez sur creer pour ajouter une promotion</p>
+                                <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Année académique créée. Cliquez sur créer pour en ajouter une.</p>
                             </div>
                         }
                     </div>}
+
+                        {/* Promotion data starts */}
+                    {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                    <div className="">
+                        {selectedAnneeAcademiqueCode && fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                            <table>
+                                <th>Code</th>
+                                <th>Lib</th>
+                                <th></th>
+                                { fetchedDonneesRefsData?.map(data => {
+                                    return (
+                                        <tr className='font-bold' key={data.proCode}>
+                                            <td>{data.proCode}</td>
+                                            <td>{data.proLib}</td>
+                                            <td>
+                                                <div className="icons-wrapper">
+                                                    <i
+                                                        className="pi pi-file-edit"
+                                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                        onClick={() => {
+                                                            setEditFormState(true)
+                                                            setUpdatedValue(data.proLib)
+                                                            setUpdatedDataCode(data.proCode)
+                                                        }}
+                                                    ></i>
+                                                    <i
+                                                        className="pi pi-trash"
+                                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.proCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
+                                                    >
+                                                    </i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                        </div>
+                        :
+                        <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                            {/* <p style={{ maxWidth: "70%" }} className='border-4'>Aucune {donnesRef} créée. Cliquez sur créer pour en ajouter une.</p> */}
+                            {selectedAnneeAcademiqueCode && fetchedDonneesRefsData.length === 0 ? 
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion enregistrée pour cette année academique. Cliquez sur créer pour en ajouter une</p>
+                            :
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Veuillez selectionnez une annnee academique pour afficher ses promotions.</p>
+                        }
+                        </div>
+                    }
+                    </div>}
+                        {/* Promotion data ends */}
+
+
                     
                 </div>
 
