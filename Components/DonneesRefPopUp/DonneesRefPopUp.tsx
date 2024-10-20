@@ -105,6 +105,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
     const [fetchedPromotionAnneeAcademique, setFetchedPromotionAnneeAcademique] = useState<fetchedDonneesRefsDataStructure[]>([])
 
+    // const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
+
     const [selectedDonneesRefLib, setSelectedDonneesRefLib] = useState('');
     const cities = [
         { name: 'New York', code: 'NY' },
@@ -319,7 +321,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
-                resetCodeAndValue()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
+                // resetCodeAndValue()
             }
 
         } catch (error) {
@@ -329,11 +332,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     }
 
     // function qui se charge de la recuperation des promotions
-    const getAllPromotionData = async () => {
+    const getAllPromotionData = async (aacCode: number | null) => {
+
+        if(aacCode === null) return;
 
         try {
             
-            const response = await axios.get(`${backendApi}/api/promotion`)
+            const response = await axios.get(`${backendApi}/api/promotion/${aacCode}`)
 
             // console.log(response.data)
             if(response.status === 200) {
@@ -362,7 +367,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
-                resetCodeAndValue()
+                // resetCodeAndValue()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
             }
 
         } catch (error) {
@@ -384,7 +390,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             // console.log(response.data)
             if(response.status === 200) {
                 fetchingDonnessReferentielles()
-                resetCodeAndValue()
+                // resetCodeAndValue()
+                getAllPromotionData(selectedAnneeAcademiqueCode)
                 showSuccess('Donnée supprimée avec succes')
             }
 
@@ -456,6 +463,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 break;
                 case "Promotion":
                 getAllPromotionData()       
+                fetchingAnneeAnneeAcademiqueData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
         
@@ -553,7 +561,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     position={position}
                     footer={footerContent}>
 
-                        {donnesRef === "Promotion" 
+                        {/* {donnesRef === "Promotion" 
                         && 
                         <div 
                             className="w-full flex justify-content-start mb-4"
@@ -572,7 +580,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 // className="w-full md:w-14rem"
                                 className="w-full"
                             />
-                        </div>}
+                        </div>} */}
 
                         <InputText 
                             value={newDataValue} 
@@ -603,6 +611,29 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 
                 <div className="p-0 m-0 popup-container">
                     <div className="flex justify-end btn-wrapper">
+                        
+                        {donnesRef === "Promotion" && <div 
+                            className="w-full flex justify-content-start"
+                        >
+                            <Dropdown 
+                                value={selectedDonneesRefLib} 
+                                onChange={(e: DropdownChangeEvent) => {
+                                    setSelectedDonneesRefLib(e.value)
+                                    // setSelectedDataCode(e.target.value.aacCode)
+                                    console.log(e.target.value.aacCode)
+                                    setSelectedAnneeAcademiqueCode(e.target.value.aacCode)
+                                    getAllPromotionData(e.target.value.aacCode)
+
+                                }} 
+                                options={fetchedPromotionAnneeAcademique} 
+                                // options={cities} 
+                                optionLabel="aacLib" 
+                                placeholder="Selectionnez une Annee Academique" 
+                                // className="w-full md:w-14rem"
+                                className="w-[40%]"
+                            />
+                        </div>}
+
                         <span>
                             <Button 
                                 // label={`Ajouter une ${donnesRef}`} 
@@ -610,7 +641,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 icon="pi pi-plus-circle" 
                                 iconPos="right" 
                                 onClick={() => {
-                                    fetchingAnneeAnneeAcademiqueData()
                                     setNewDonneesRefFormState(true)
                                 }}
                             />
@@ -705,10 +735,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         }
                     </div>}
 
+                        {/* Promotion data starts */}
                     {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
                     && 
                     <div className="">
-                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                        {selectedAnneeAcademiqueCode && fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
                             <table>
                                 <th>Code</th>
                                 <th>Lib</th>
@@ -749,10 +780,16 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         </div>
                         :
                         <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
-                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucune {donnesRef} créée. Cliquez sur créer pour en ajouter une.</p>
+                            {/* <p style={{ maxWidth: "70%" }} className='border-4'>Aucune {donnesRef} créée. Cliquez sur créer pour en ajouter une.</p> */}
+                            {selectedAnneeAcademiqueCode && fetchedDonneesRefsData.length === 0 ? 
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Promotion enregistrée pour cette année academique. Cliquez sur créer pour en ajouter une</p>
+                            :
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Veuillez selectionnez une annnee academique pour afficher ses promotions.</p>
+                        }
                         </div>
                     }
                     </div>}
+                        {/* Promotion data ends */}
 
 
                     
