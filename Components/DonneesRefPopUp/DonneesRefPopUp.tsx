@@ -21,6 +21,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import '../../styles/components/DonneesRefPopUp.scss'
 import { TableData } from '../DataTable/DataTable';
 import axios from 'axios';
+import { handleFetchServiceFiliereData } from '@/service/filiereService';
 
 type DonneesRefPopUpProps = {
     donnesRef: string,
@@ -38,7 +39,9 @@ type fetchedDonneesRefsDataStructure = {
     proCode: number,
     proLib: string,
     filLib: string,
-    filCode: number
+    filCode: number,
+    nivCode: number,
+    nivLib: string
 }
 
 enum typeOfDataFetchedEnums {
@@ -96,6 +99,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     const [newDataValue, seNewDataValue] = useState<string>('')
 
+
     // montrer les messages selon si les donnees ont ete modifier ou ajouter
     const footerContent = isEditFormVisible ? (
         <div>
@@ -115,6 +119,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Filiere") {
                         handleUpdateFiliereData()
+                    }
+                    else if(donnesRef === "Niveau") {
+                        handleUpdateNiveauData()
                     }
                     setEditFormState(false) 
                     setEditRefData(false)
@@ -147,7 +154,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         return;
                     }
                     addNewDonneesReferentielles()
-                    showSuccess('Donnée créée avec succes')
+                    // showSuccess('Donnée créée avec succes')
                     seNewDataValue('')
                     setNewDonneesRefFormState(false)
                 }} 
@@ -175,6 +182,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Filiere") {
                         handleDeleteFiliereData()
+                    }
+                    else if(donnesRef === "Niveau") {
+                        handleDeleteNiveauData()
                     }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
@@ -245,6 +255,103 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         // toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:'Mis a jour effectue', life: 3000});
     }
 
+    // Niveau Data CRUD starts
+
+    // function qui se charge de la creation des niveau
+    const handleSubmitNiveauData = async () => {
+
+        if(donnesRef !== "Niveau") return;
+
+        let dataToBeSubmitted = {
+            nivLib: newDataValue,
+            nivCreerPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/niveau`, dataToBeSubmitted)
+
+            console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée créée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des niveau
+    const handleFetchNiveauData = async () => {
+
+        if(donnesRef !== "Niveau") return;
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/niveau`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    
+    // function qui se charge de la recuperation des filieres
+    const handleUpdateNiveauData = async () => {
+
+        if(donnesRef !== "Niveau") return;
+
+        let dataToBeSubmitted = {
+            nivLib: updatedValue,
+            nivModifierPar: "yannickwnz",
+        }             
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/niveau/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des filieres
+    const handleDeleteNiveauData = async () => {
+
+        if(donnesRef !== "Niveau" || !selectedDataCode) return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/niveau/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+
+    // Niveau Data CRUD ends
     
     // function qui se charge de la creation des filieres
     const handleSubmitFiliereData = async () => {
@@ -515,12 +622,19 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 setTypeOfDataFetched(typeOfDataFetchedEnums.AnneeAcademiqueType);
                 fetchingAnneeAnneeAcademiqueData()       
                 break;
+
             case "Promotion":
                 fetchingAnneeAnneeAcademiqueData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
+
             case "Filiere":
                 handleFetchFiliereData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
+
+            case "Niveau":
+                handleFetchNiveauData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
         
@@ -544,6 +658,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Filiere":
                 handleSubmitFiliereData()
+                break;
+
+            case "Niveau":
+                handleSubmitNiveauData()
                 break;
         
             default:
@@ -900,6 +1018,57 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     </div>}
                         {/* filiere data ends */}
+
+                        {/* niveau data starts */}
+                    {donnesRef === "Niveau" && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                    <div className="">
+                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                            <table>
+                                <th>Code</th>
+                                <th>Libelle</th>
+                                <th></th>
+                                {fetchedDonneesRefsData?.map(data => {
+                                    return (
+                                        <tr className='font-bold' key={data.nivCode}>
+                                            <td>{data.nivCode}</td>
+                                            <td>{data.nivLib}</td>
+                                            <td>
+                                                <div className="icons-wrapper">
+                                                    <i
+                                                        className="pi pi-file-edit"
+                                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                        onClick={() => {
+                                                            setEditFormState(true)
+                                                            setUpdatedValue(data.nivLib)
+                                                            setUpdatedDataCode(data.nivCode)
+                                                        }}
+                                                    ></i>
+                                                    <i
+                                                        className="pi pi-trash"
+                                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.nivCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
+                                                    >
+                                                    </i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                        </div>
+                        :
+                        <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucun Niveau créé. Cliquez sur créer pour en ajouter un.</p>
+                        </div>
+                    }
+                    </div>}
+                        {/* niveau data ends */}
                     
                 </div>
 
