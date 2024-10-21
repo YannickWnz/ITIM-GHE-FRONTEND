@@ -21,21 +21,6 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import '../../styles/components/DonneesRefPopUp.scss'
 import { TableData } from '../DataTable/DataTable';
 import axios from 'axios';
-import { cp } from 'fs';
-
-interface Product {
-    id: string;
-    code: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-    category: string;
-    quantity: number;
-    inventoryStatus: string;
-    rating: number;
-}
-
 
 type DonneesRefPopUpProps = {
     donnesRef: string,
@@ -44,13 +29,6 @@ type DonneesRefPopUpProps = {
     setPopUpState:  React.Dispatch<React.SetStateAction<boolean>>
 }
 
-// type ProductList = {
-//     code: string;
-//     lib: string;
-// }
-
-// type updatedList = ProductList & {edit: JSX.Element}
-
 type fetchedDonneesRefsDataStructure = {
     aacCode: number
     aacCreerPar: string,
@@ -58,7 +36,9 @@ type fetchedDonneesRefsDataStructure = {
     aacModifierPar: string, 
     aacStatus: boolean,
     proCode: number,
-    proLib: string
+    proLib: string,
+    filLib: string,
+    filCode: number
 }
 
 enum typeOfDataFetchedEnums {
@@ -88,7 +68,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [updatedDataCode, setUpdatedDataCode] = useState<number | null>(null);
     const [selectedDataCode, setSelectedDataCode] = useState<number | null>(null);
     const [position, setPosition] = useState<'center' | 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'>('top');
-    // const [position, setPosition] = useState<string>('center');
     const [changesConfirmed, setChangesConfirmed] = useState(false)
 
     const [fetchedDonneesRefsData, setFetchedDonneesRefsData] = useState<fetchedDonneesRefsDataStructure[]>([])
@@ -105,41 +84,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
     const [fetchedPromotionAnneeAcademique, setFetchedPromotionAnneeAcademique] = useState<fetchedDonneesRefsDataStructure[]>([])
 
-    // const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
-
     const [selectedDonneesRefLib, setSelectedDonneesRefLib] = useState('');
-    const cities = [
-        { name: 'New York', code: 'NY' },
-        { name: 'Rome', code: 'RM' },
-        { name: 'London', code: 'LDN' },
-        { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
-    ];
 
     const [updateStatusData, setUpdateStatusData] = useState({
         newStatus: false,
         aacCode: 0
     })
-
-    const [products, setProducts] = useState([
-        {
-            code: '001',
-            lib: '1ere Annee Informatique'
-        },
-        {
-            code: '002',
-            lib: 'Exemple 2'
-        },
-        {
-            code: '003',
-            lib: 'Exemple 3'
-        },
-        {
-            code: '004',
-            lib: 'Exemple 4'
-        },
-
-    ]);
 
     // state for new donnees referentielles form
     const [newDonneesRefFormState, setNewDonneesRefFormState] = useState(false)
@@ -162,6 +112,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Promotion") {
                         updataPromotionData()
+                    }
+                    else if(donnesRef === "Filiere") {
+                        handleUpdateFiliereData()
                     }
                     setEditFormState(false) 
                     setEditRefData(false)
@@ -219,6 +172,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         deleteDonneesReferentiellesData()
                     } else if (donnesRef === "Promotion") {
                         deletePromotionData()
+                    }
+                    else if(donnesRef === "Filiere") {
+                        handleDeleteFiliereData()
                     }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
@@ -287,6 +243,99 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const showSuccess = (details: string) => {
         toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:`${details}`, life: 3000});
         // toast.current && toast.current.show({severity:'success', summary: 'Succes', detail:'Mis a jour effectue', life: 3000});
+    }
+
+    
+    // function qui se charge de la creation des filieres
+    const handleSubmitFiliereData = async () => {
+
+        if(donnesRef !== "Filiere") return;
+
+        let dataToBeSubmitted = {
+            filLib: newDataValue,
+            filCreerPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/filiere`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    
+    // function qui se charge de la recuperation des filieres
+    const handleFetchFiliereData = async () => {
+
+        if(donnesRef !== "Filiere") return;
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/filiere`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des filieres
+    const handleUpdateFiliereData = async () => {
+
+        if(donnesRef !== "Filiere") return;
+
+        let dataToBeSubmitted = {
+            filLib: updatedValue,
+            filModifierPar: "yannickwnz",
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/filiere/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des filieres
+    const handleDeleteFiliereData = async () => {
+
+        if(donnesRef !== "Filiere" || !selectedDataCode) return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/filiere/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     // function qui se charge de fetch toutes les annee academiques
@@ -466,8 +515,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 setTypeOfDataFetched(typeOfDataFetchedEnums.AnneeAcademiqueType);
                 fetchingAnneeAnneeAcademiqueData()       
                 break;
-                case "Promotion":
+            case "Promotion":
                 fetchingAnneeAnneeAcademiqueData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
+            case "Filiere":
+                handleFetchFiliereData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
         
@@ -487,6 +540,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Promotion":
                 submitPromotionData()
+                break;
+
+            case "Filiere":
+                handleSubmitFiliereData()
                 break;
         
             default:
@@ -738,7 +795,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     </div>}
 
                         {/* Promotion data starts */}
-                    {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    {donnesRef === 'Promotion' && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
                     && 
                     <div className="">
                         {selectedAnneeAcademiqueCode && fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
@@ -792,8 +849,57 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     </div>}
                         {/* Promotion data ends */}
-
-
+                    
+                        {/* filiere data starts */}
+                    {donnesRef === "Filiere" && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                    <div className="">
+                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                            <table>
+                                <th>Code</th>
+                                <th>Libelle</th>
+                                <th></th>
+                                {fetchedDonneesRefsData?.map(data => {
+                                    return (
+                                        <tr className='font-bold' key={data.filCode}>
+                                            <td>{data.filCode}</td>
+                                            <td>{data.filLib}</td>
+                                            <td>
+                                                <div className="icons-wrapper">
+                                                    <i
+                                                        className="pi pi-file-edit"
+                                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                        onClick={() => {
+                                                            setEditFormState(true)
+                                                            setUpdatedValue(data.filLib)
+                                                            setUpdatedDataCode(data.filCode)
+                                                        }}
+                                                    ></i>
+                                                    <i
+                                                        className="pi pi-trash"
+                                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.filCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
+                                                    >
+                                                    </i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                        </div>
+                        :
+                        <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucune {donnesRef} créée. Cliquez sur créer pour en ajouter une.</p>
+                        </div>
+                    }
+                    </div>}
+                        {/* filiere data ends */}
                     
                 </div>
 
