@@ -1,32 +1,94 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 
 import '../../styles/components/ClassesDonneesRefPopUp.scss'
+import { useNiveauDonneesRef } from '../Hooks/useApi';
+import { fetchedDonneesRefsDataStructure } from '@/types/donneesRef';
+import axios from 'axios';
 
 type TComponentProps = {
     isComponentVisible: boolean,
     setComponentVisibility: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+const backendApi = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
+
 export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibility}: TComponentProps) => {
 
     const [visible, setVisible] = useState(true);
 
-    const [selectedCity, setSelectedCity] = useState(null);
     const [selectedFiliere, setSelectedFiliere] = useState(null);
     const [selectedNiveau, setSelectedNiveau] = useState(null);
-    const [selectedCountry, setSelectedCountry] = useState(null);
 
-    const cities = [
-        { name: 'New York', code: 'NY' },
-        { name: 'Rome', code: 'RM' },
-        { name: 'London', code: 'LDN' },
-        { name: 'Istanbul', code: 'IST' },
-        { name: 'Paris', code: 'PRS' }
-    ];
+    const [niveauData, setNiveauData] = useState<fetchedDonneesRefsDataStructure[]>([]);
+    const [filiereData, setFiliereData] = useState<fetchedDonneesRefsDataStructure[]>([]);
+    const [fetchedDonneesRefsData, setFetchedDonneesRefsData] = useState<fetchedDonneesRefsDataStructure[]>([])
+
+
+    const handleFetchedNiveauData = async () => {
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/niveau`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setNiveauData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la recuperation des filieres
+    const handleFetchFiliereData = async () => {
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/filiere`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFiliereData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    const handleCreateClasseData = async () => {
+
+        let dataToBeSubmitted = {
+
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/classe`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFiliereData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    useEffect(() => {
+        handleFetchFiliereData();
+        handleFetchedNiveauData();
+    }, [])
 
     const filieres = [
         { name: 'Filiere 1', code: 'F1' },
@@ -40,14 +102,6 @@ export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibilit
         { name: 'Niveau 2', code: 'N2' },
         { name: 'Niveau 3', code: 'N3' },
         { name: 'Niveau 4', code: 'N4' }
-    ];
-
-    const africanCountries = [
-        { name: 'Central African Republic', code: 'CAR' },
-        { name: 'Ghana', code: 'GH' },
-        { name: 'Cameroon', code: 'CMR' },
-        { name: 'Kenya', code: 'KN' },
-        { name: 'Zimbabwe', code: 'ZBW' }
     ];
 
 
@@ -64,14 +118,18 @@ export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibilit
                 >
                     <div className="">
                         <span className='font-bold' >Niveau: </span>
-                        <Dropdown value={selectedNiveau} onChange={(e) => setSelectedNiveau(e.value)} options={niveau} optionLabel="name"
+                        <Dropdown value={selectedNiveau} onChange={(e) => setSelectedNiveau(e.value)} options={niveauData} optionLabel="nivLib"
                             placeholder="Selectionnez un niveau" className="w-full md:w-14rem" />
+                        {/* <Dropdown value={selectedNiveau} onChange={(e) => setSelectedNiveau(e.value)} options={niveau} optionLabel="name"
+                            placeholder="Selectionnez un niveau" className="w-full md:w-14rem" /> */}
                     </div>
 
                     <div className="">
                         <span className='font-bold'>Filiere: </span>
-                        <Dropdown style={{ outline: 'none' }} value={selectedFiliere} onChange={(e) => setSelectedFiliere(e.value)} options={filieres} optionLabel="name"
+                        <Dropdown style={{ outline: 'none' }} value={selectedFiliere} onChange={(e) => setSelectedFiliere(e.value)} options={filiereData} optionLabel="filLib"
                             placeholder="Selectionnez une filiere" className="w-full md:w-14rem" />
+                        {/* <Dropdown style={{ outline: 'none' }} value={selectedFiliere} onChange={(e) => setSelectedFiliere(e.value)} options={filieres} optionLabel="name"
+                            placeholder="Selectionnez une filiere" className="w-full md:w-14rem" /> */}
                     </div>
                 </div>
                 <div className="flex justify-center btn-wrapper mt-3">
@@ -93,7 +151,7 @@ export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibilit
                     </p>
                 </div> */}
 
-                <div className="p-0 m-0 popup-container">
+                {/* <div className="p-0 m-0 popup-container">
                     <ul className='p-0'>
                         <div className='data-wrapper flex'>
                             <li className='list-none'>Exemple Donnee Referentielle 1</li>
@@ -101,17 +159,12 @@ export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibilit
                                 <i 
                                 className="pi pi-file-edit" 
                                 style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    // setEditRefData(true)
-                                    // show('top')
-                                }}
+                                onClick={() => {}}
                                 ></i>
                                 <i 
                                 className="pi pi-trash" 
                                 style={{ fontSize: '1.1rem' }}
-                                onClick={() => {
-                                    // confirmDelete()
-                                }}
+                                onClick={() => {}}
                                 >
 
                                 </i>
@@ -125,8 +178,53 @@ export const ClassesDonnesRefPopUp = ({isComponentVisible, setComponentVisibilit
                             </div>
                         </div>
                     </ul>
-                </div>
+                </div> */}
                 
+                                        {/* Promotion data starts */}
+                                        {
+                                            <div className="">
+                                                {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                                                    <table>
+                                                        <th>Code</th>
+                                                        <th>Lib</th>
+                                                        <th></th>
+                                                        { fetchedDonneesRefsData?.map(data => {
+                                                            return (
+                                                                <tr className='font-bold' key={data.proCode}>
+                                                                    <td>{data.proCode}</td>
+                                                                    <td>{data.proLib}</td>
+                                                                    <td>
+                                                                        <div className="icons-wrapper">
+                                                                            <i
+                                                                                className="pi pi-file-edit"
+                                                                                style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                                                onClick={() => {}}
+                                                                            ></i>
+                                                                            <i
+                                                                                className="pi pi-trash"
+                                                                                style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                                                onClick={() => {}}
+                                                                            >
+                                                                            </i>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </table>
+                                                </div>
+                                                :
+                                                <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                                                    {selectedFiliere && selectedNiveau && <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Classe créée pour le Niveau et la Filiere selectionnee. Cliquez sur créer pour en ajouter.</p>}
+                                                    
+                                                    {((!selectedFiliere && !selectedNiveau) || (selectedFiliere && !selectedNiveau) || (!selectedFiliere && selectedNiveau)) && <p style={{ maxWidth: "70%" }} className='border-4'>Selectionner une filiere et un niveau pour afficher leurs classes ou pour en ajouter.</p>}
+
+                                                </div>
+                                            }
+                                            </div>
+                                            }
+                        {/* Promotion data ends */}
+
             </Dialog>
         </>
     )
