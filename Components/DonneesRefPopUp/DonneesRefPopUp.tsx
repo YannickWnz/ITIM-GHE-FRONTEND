@@ -179,6 +179,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
             icon="pi pi-times" 
             onClick={() => {
                 setNewDonneesRefFormState(false)
+                seNewDataValue('')
             }} className="p-button-text" />
             <Button 
                 label="Confirmez" 
@@ -186,6 +187,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 onClick={() => {
                     if(!newDataValue.trim()) {
                         toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut être vide`, life: 3000});
+                        return;
+                    }
+                    if(donnesRef === "Promotion" && (!selectedAnneeAcademiqueCode || selectedAnneeAcademiqueCode === null)) {
+                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Veuillez selectionner une annee academique`, life: 3000});
                         return;
                     }
                     addNewDonneesReferentielles()
@@ -334,7 +339,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     // function qui se charge de la recuperation des promotions
     const getAllPromotionData = async (aacCode: number | null) => {
 
-        if(aacCode === null) return;
+        if(aacCode === null || !aacCode) return;
 
         try {
             
@@ -462,7 +467,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 fetchingAnneeAnneeAcademiqueData()       
                 break;
                 case "Promotion":
-                getAllPromotionData()       
                 fetchingAnneeAnneeAcademiqueData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
@@ -556,7 +560,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     visible={visible}
                     style={{ width: '40vw' }} 
                     onHide={() => {
-                        if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib('')
+                        if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib(''); seNewDataValue('')
                     }} 
                     position={position}
                     footer={footerContent}>
@@ -619,8 +623,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                 value={selectedDonneesRefLib} 
                                 onChange={(e: DropdownChangeEvent) => {
                                     setSelectedDonneesRefLib(e.value)
-                                    // setSelectedDataCode(e.target.value.aacCode)
-                                    console.log(e.target.value.aacCode)
                                     setSelectedAnneeAcademiqueCode(e.target.value.aacCode)
                                     getAllPromotionData(e.target.value.aacCode)
 
