@@ -15,7 +15,8 @@ import { Column } from 'primereact/column';
 import { InputSwitch, InputSwitchChangeEvent } from "primereact/inputswitch";
 import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-        
+
+import { fetchedDonneesRefsDataStructure } from '@/types/donneesRef';
 
 // css import
 import '../../styles/components/DonneesRefPopUp.scss'
@@ -28,20 +29,6 @@ type DonneesRefPopUpProps = {
     popUpState: boolean,
     setDonneesRef:  React.Dispatch<React.SetStateAction<string>>
     setPopUpState:  React.Dispatch<React.SetStateAction<boolean>>
-}
-
-type fetchedDonneesRefsDataStructure = {
-    aacCode: number
-    aacCreerPar: string,
-    aacLib: string,
-    aacModifierPar: string, 
-    aacStatus: boolean,
-    proCode: number,
-    proLib: string,
-    filLib: string,
-    filCode: number,
-    nivCode: number,
-    nivLib: string
 }
 
 enum typeOfDataFetchedEnums {
@@ -86,6 +73,17 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     const [selectedAnneeAcademiqueCode, setSelectedAnneeAcademiqueCode] = useState<number | null>(null)
     const [fetchedPromotionAnneeAcademique, setFetchedPromotionAnneeAcademique] = useState<fetchedDonneesRefsDataStructure[]>([])
+
+    
+    const [selectedFiliere, setSelectedFiliere] = useState(null);
+    const [selectedNiveau, setSelectedNiveau] = useState(null);
+
+    const [niveauData, setNiveauData] = useState<fetchedDonneesRefsDataStructure[]>([]);
+    const [filiereData, setFiliereData] = useState<fetchedDonneesRefsDataStructure[]>([]);
+
+    const [selectedFilCode, setSelectedFilCode] = useState<number | null>(null)
+    const [selectedNivCode, setSelectedNivCode] = useState<number | null>(null)
+
 
     const [selectedDonneesRefLib, setSelectedDonneesRefLib] = useState('');
 
@@ -151,6 +149,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     if(donnesRef === "Promotion" && (!selectedAnneeAcademiqueCode || selectedAnneeAcademiqueCode === null)) {
                         toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Veuillez selectionner une annee academique`, life: 3000});
+                        return;
+                    }
+                    if(donnesRef === "Classe" && (!selectedFilCode || !selectedNivCode)) {
+                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Veuillez selectionner une filiere et un niveau avant d'ajouter une classe.`, life: 3000});
                         return;
                     }
                     addNewDonneesReferentielles()
@@ -286,7 +288,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     // function qui se charge de la recuperation des niveau
     const handleFetchNiveauData = async () => {
 
-        if(donnesRef !== "Niveau") return;
+        // if(donnesRef !== "Niveau") return;
 
         try {
             
@@ -294,7 +296,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             // console.log(response.data)
             if(response.status === 200) {
-                setFetchedDonneesRefsData(response.data)
+                if(donnesRef !== "Classe") {
+                    setFetchedDonneesRefsData(response.data)
+                } else {
+                    setNiveauData(response.data);
+                }
+
             }
 
         } catch (error) {
@@ -349,9 +356,71 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         }
 
     }
-
-
     // Niveau Data CRUD ends
+    
+    // Classe Data CRUD starts
+    // function qui se charge de la creation des filieres
+    const handleSubmitClasseData = async () => {
+
+        // if((!selectedFilCode && !selectedNivCode) || (selectedFilCode === null && selectedNivCode === null)) return;
+        if(selectedFilCode === null || selectedNivCode === null) return;
+
+        let dataToBeSubmitted = {
+            claLib: newDataValue,
+            claCreerPar: "yannickwnz",
+            claNivCode: selectedNivCode,
+            claFilCode: selectedFilCode
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/classe`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée créée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    const handleFetchClasseData = async () => {
+
+        if(selectedFilCode === null || selectedNivCode === null) return;
+
+        try {
+
+            const response = await axios.get(`${backendApi}/api/classe`, {
+                params: {
+                    filCode: selectedFilCode,
+                    nivCode: selectedNivCode
+                }
+            })
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    useEffect(() => {
+        handleFetchClasseData()
+    }, [selectedFilCode, selectedNivCode])
+
+    // useEffect(() => {
+    //     handleFetchClasseData()
+    // }, [selectedFilCode, selectedNivCode])
+
+    // Classe Data CRUD ends
     
     // function qui se charge de la creation des filieres
     const handleSubmitFiliereData = async () => {
@@ -382,7 +451,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     // function qui se charge de la recuperation des filieres
     const handleFetchFiliereData = async () => {
 
-        if(donnesRef !== "Filiere") return;
+        // if(donnesRef !== "Filiere") return;
 
         try {
             
@@ -390,7 +459,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             // console.log(response.data)
             if(response.status === 200) {
-                setFetchedDonneesRefsData(response.data)
+                if(donnesRef !== "Classe") {
+                    setFetchedDonneesRefsData(response.data)
+                } else {
+                    setFiliereData(response.data);
+                }
+
             }
 
         } catch (error) {
@@ -637,6 +711,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 handleFetchNiveauData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
+
+            case "Classe":
+                handleFetchClasseData()
+                handleFetchNiveauData()
+                handleFetchFiliereData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
         
             default:
                 break;
@@ -662,6 +743,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Niveau":
                 handleSubmitNiveauData()
+                break;
+
+            case "Classe":
+                handleSubmitClasseData()
                 break;
         
             default:
@@ -787,7 +872,43 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
                 onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched(''); setFetchedDonneesRefsData([]); }}
             >
-                
+                {        
+                    donnesRef === "Classe" 
+                    &&
+                    <div 
+                        className="flex justify-between w-100 mb-2"
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                    >
+                        <div className="">
+                            <span className='font-bold' >Niveau: </span>
+                            <Dropdown 
+                            value={selectedNiveau} 
+                            onChange={(e) => {
+                                 setSelectedNiveau(e.value)
+                                 setSelectedNivCode(e.target.value.nivCode)
+                            }} 
+                            options={niveauData} 
+                            optionLabel="nivLib"
+                            placeholder="Selectionnez un niveau" 
+                            className="w-full md:w-14rem" />
+                        </div>
+
+                        <div className="">
+                            <span className='font-bold'>Filiere: </span>
+                            <Dropdown 
+                            style={{ outline: 'none' }} 
+                            value={selectedFiliere} 
+                            onChange={(e) => {
+                                setSelectedFiliere(e.value)
+                                setSelectedFilCode(e.target.value.filCode)
+                            }} 
+                            options={filiereData} 
+                            optionLabel="filLib"
+                            placeholder="Selectionnez une filiere" className="w-full md:w-14rem" />
+                        </div>
+                    </div>
+                }
+
                 <div className="p-0 m-0 popup-container">
                     <div className="flex justify-end btn-wrapper">
                         
@@ -1069,6 +1190,52 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     </div>}
                         {/* niveau data ends */}
+
+                        {/* classe data starts */}
+                    {donnesRef === "Classe" && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                        <div className="">
+                            {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                                <table>
+                                    <th>Code</th>
+                                    <th>Lib</th>
+                                    <th></th>
+                                    { fetchedDonneesRefsData?.map(data => {
+                                        return (
+                                            <tr className='font-bold' key={data.claCode}>
+                                                <td>{data.claCode}</td>
+                                                <td>{data.claLib}</td>
+                                                <td>
+                                                    <div className="icons-wrapper">
+                                                        <i
+                                                            className="pi pi-file-edit"
+                                                            style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                            onClick={() => {}}
+                                                        ></i>
+                                                        <i
+                                                            className="pi pi-trash"
+                                                            style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                            onClick={() => {}}
+                                                        >
+                                                        </i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </table>
+                            </div>
+                            :
+                            <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                                {selectedFiliere && selectedNiveau && <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Classe créée pour le Niveau et la Filiere selectionnee. Cliquez sur créer pour en ajouter.</p>}
+                                
+                                {((!selectedFiliere && !selectedNiveau) || (selectedFiliere && !selectedNiveau) || (!selectedFiliere && selectedNiveau)) && <p style={{ maxWidth: "70%" }} className='border-4'>Selectionner une filiere et un niveau pour afficher leurs classes ou pour en ajouter.</p>}
+
+                            </div>
+                        }
+                        </div>
+                    }
+                        {/* classe data ends */}
                     
                 </div>
 
