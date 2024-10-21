@@ -175,7 +175,10 @@ function DonneesRef() {
             <div 
                 className="col-12 lg:col-6 xl:col-3 cursor-pointer"
                 onClick={() =>{
-                    setClasseDonneesRefPopUp(true)
+                    // setClasseDonneesRefPopUp(true)
+                    setVisible(true)
+                    setSelectedDonneesRef('Classe')
+                    setDonneesRefPopUpState(true)
                 }}
             >
                 <div className="card mb-0">
