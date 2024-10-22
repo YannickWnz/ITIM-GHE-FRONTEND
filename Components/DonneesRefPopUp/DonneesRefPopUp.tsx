@@ -15,6 +15,9 @@ import { Column } from 'primereact/column';
 import { InputSwitch, InputSwitchChangeEvent } from "primereact/inputswitch";
 import { ToggleButton, ToggleButtonChangeEvent } from 'primereact/togglebutton';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { SelectButton } from 'primereact/selectbutton';
+import { InputNumber } from 'primereact/inputnumber';
+
 
 import { fetchedDonneesRefsDataStructure } from '@/types/donneesRef';
 
@@ -92,11 +95,24 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
         aacCode: 0
     })
 
+    const rubriqueFraisUniqueOptions = ['Non', 'Oui'];
+    const [rubriqueFraisUniqueValue, setRubriqueFraisUniqueValue] = useState(rubriqueFraisUniqueOptions[0]);
+
     // state for new donnees referentielles form
     const [newDonneesRefFormState, setNewDonneesRefFormState] = useState(false)
 
     const [newDataValue, seNewDataValue] = useState<string>('')
 
+    const [rubriqueMontant, setRubriqueMontant] = useState<number | null>(null)
+
+    const [newRubriqueData, setNewRubriqueData] = useState({
+        rubLib: '',
+        rubMontant: '',
+        rubFraisUnique: false
+    })
+
+    const [updatedMontant, setUpdatedMontant] = useState<number | null>(null)
+    const [updatedRubriqueFraisUniqueValue, setUpdatedRubriqueFraisUniqueValue] = useState('');
 
     // montrer les messages selon si les donnees ont ete modifier ou ajouter
     const footerContent = isEditFormVisible ? (
@@ -120,6 +136,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Niveau") {
                         handleUpdateNiveauData()
+                    }
+                    else if(donnesRef === "Classe") {
+                        handleUpdateClasseData()
+                    }
+                    else if(donnesRef === "Rubrique") {
+                        handleUpdateRubriqueData()
                     }
                     setEditFormState(false) 
                     setEditRefData(false)
@@ -158,6 +180,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     addNewDonneesReferentielles()
                     // showSuccess('Donnée créée avec succes')
                     seNewDataValue('')
+                    setRubriqueMontant(null)
+                    setRubriqueFraisUniqueValue('Non')
                     setNewDonneesRefFormState(false)
                 }} 
                 autoFocus 
@@ -187,6 +211,12 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Niveau") {
                         handleDeleteNiveauData()
+                    }
+                    else if(donnesRef === "Classe") {
+                        handleDeleteClasseData()
+                    }
+                    else if(donnesRef === "Rubrique") {
+                        handleDeleteRubriqueData()
                     }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
@@ -412,15 +442,152 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     }
 
+    // function qui se charge de la mise a jour des classes
+    const handleUpdateClasseData = async () => {
+
+        if(donnesRef !== "Classe") return;
+
+        let dataToBeSubmitted = {
+            claLib: updatedValue,
+            claModifierPar: "yannickwnz",
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/classe/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la suppression des classes
+    const handleDeleteClasseData = async () => {
+
+        if(donnesRef !== "Classe" || !selectedDataCode) return;
+
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/classe/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
     useEffect(() => {
         handleFetchClasseData()
     }, [selectedFilCode, selectedNivCode])
 
-    // useEffect(() => {
-    //     handleFetchClasseData()
-    // }, [selectedFilCode, selectedNivCode])
-
     // Classe Data CRUD ends
+
+    // Rubrique DATA CRUD STARTS
+    const handleFetchRubriqueData = async () => {
+
+        try {
+
+            const response = await axios.get(`${backendApi}/api/rubrique`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la creation des rubriques
+    const handleSubmitRubriqueData = async () => {
+
+        if(donnesRef !== "Rubrique") return;
+
+        let dataToBeSubmitted = {
+            rubLib: newDataValue,
+            rubMontant: rubriqueMontant,
+            rubFraisUnique: rubriqueFraisUniqueValue === 'Oui' ? true : false,
+            rubCreerPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/rubrique`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée créée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la mise a jour des rubriques
+    const handleUpdateRubriqueData = async () => {
+
+        if(donnesRef !== "Rubrique") return;
+
+        let dataToBeSubmitted = {
+            rubLib: updatedValue,
+            rubMontant: updatedMontant,
+            rubModifierPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/rubrique/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la suppression des rubriques
+    const handleDeleteRubriqueData = async () => {
+
+        if(donnesRef !== "Rubrique") return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/rubrique/${selectedDataCode}`)
+
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // Rubrique DATA CRUD END
     
     // function qui se charge de la creation des filieres
     const handleSubmitFiliereData = async () => {
@@ -473,7 +640,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     }
 
-    // function qui se charge de la recuperation des filieres
+    // function qui se charge de la mise a jour des filieres
     const handleUpdateFiliereData = async () => {
 
         if(donnesRef !== "Filiere") return;
@@ -498,7 +665,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
     }
 
-    // function qui se charge de la recuperation des filieres
+    // function qui se charge de la suppression des filieres
     const handleDeleteFiliereData = async () => {
 
         if(donnesRef !== "Filiere" || !selectedDataCode) return;
@@ -718,6 +885,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 handleFetchFiliereData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
+
+            case "Rubrique":
+                handleFetchRubriqueData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.RubriqueType);
+                break;
         
             default:
                 break;
@@ -747,6 +919,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Classe":
                 handleSubmitClasseData()
+                break;
+
+            case "Rubrique":
+                handleSubmitRubriqueData()
                 break;
         
             default:
@@ -806,6 +982,39 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         className='w-full outline-none'
                         defaultValue={updatedValue}
                     />
+
+                        {donnesRef === "Rubrique" && 
+                            <>
+                                <InputNumber 
+                                    inputId="withoutgrouping" 
+                                    value={updatedMontant}
+                                    onChange={(e) => 
+                                        {
+                                            // setRubriqueMontant(e.value)
+                                            setUpdatedMontant(e.value)
+                                        }
+                                    } 
+                                    useGrouping={false}
+                                    placeholder='Rubrique Montant'
+                                    className='w-full outline-none mt-3' 
+                                />
+
+                                {/* <div 
+                                className='flex justify-content-between items-center mt-3 mb-5' 
+                                style={{ alignItems: 'center' }}
+                                >
+                                    <p className='font-bold p-0 m-0'>Frais Unique:</p>
+                                    <SelectButton 
+                                    value={rubriqueFraisUniqueValue} 
+                                    onChange={(e) => {
+                                        setRubriqueFraisUniqueValue(e.value)
+                                    }} 
+                                    options={rubriqueFraisUniqueOptions} 
+                                    />
+                                </div> */}
+                            </>
+                        }
+
                 </Dialog>
             }
 
@@ -816,11 +1025,16 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 <>
 
                     <Dialog 
-                    header="Creer une nouvelle donnee" 
+                    // header="Creer une nouvelle donnee" 
+                    // header={`
+                    //     ${donnesRef === 'Rubrique' && 'Creer une nouvelle rubrique'} 
+                    //     ${donnesRef !== 'Rubrique' && `${donnesRef} Creation`} 
+                    // `} 
+                    header={`${donnesRef} Creation`} 
                     visible={visible}
                     style={{ width: '40vw' }} 
                     onHide={() => {
-                        if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib(''); seNewDataValue('')
+                    if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib(''); seNewDataValue(''); setRubriqueMontant(null); setRubriqueFraisUniqueValue('Non') 
                     }} 
                     position={position}
                     footer={footerContent}>
@@ -851,8 +1065,41 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             onChange={(e) => 
                                 seNewDataValue(e.target.value)
                             } 
+                            // placeholder={`${donnesRef === "Rubrique" && 'Rubrique Libelle'}`}
+                            placeholder={`${donnesRef} Libelle`}
                             className='w-full outline-none'
                         />
+
+                        {donnesRef === "Rubrique" && 
+                        <>
+                            <InputNumber 
+                                inputId="withoutgrouping" 
+                                value={rubriqueMontant} 
+                                onChange={(e) => 
+                                    {
+                                        setRubriqueMontant(e.value)
+                                    }
+                                } 
+                                useGrouping={false}
+                                placeholder='Rubrique Montant'
+                                className='w-full outline-none mt-3' 
+                            />
+
+                            <div 
+                            className='flex justify-content-between items-center mt-3 mb-5' 
+                            style={{ alignItems: 'center' }}
+                            >
+                                <p className='font-bold p-0 m-0'>Frais Unique:</p>
+                                <SelectButton 
+                                value={rubriqueFraisUniqueValue} 
+                                onChange={(e) => {
+                                    setRubriqueFraisUniqueValue(e.value)
+                                }} 
+                                options={rubriqueFraisUniqueOptions} 
+                                />
+                            </div>
+                        </>}
+
                     </Dialog>
                 
                 </>
@@ -865,11 +1112,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 header={`Mise à jour ${donnesRef}`} 
                 visible={visible} 
                 style={{ width: '50vw' }}
+
                 // onHide est la fonction derriere l'icone X qui permet de fermer les fenetres qui affichent les donnees referentielles
                 // setPopUpState est la function qui permet l'affichage de la fenetre ... 
                 // setDonneesRef est la fonction qui contient le nom de la donnee ref qui a dynamique envoye depuis la page /donnees-ref
                 // setFetchedDonneesRefsData
-
                 onHide={() => {if (!visible) return; setVisible(false); setPopUpState(false); setDonneesRef(''); setTypeOfDataFetched(''); setFetchedDonneesRefsData([]); }}
             >
                 {        
@@ -890,7 +1137,8 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             options={niveauData} 
                             optionLabel="nivLib"
                             placeholder="Selectionnez un niveau" 
-                            className="w-full md:w-14rem" />
+                            className="w-[220px]" />
+                            {/* className="w-full md:w-14rem" /> */}
                         </div>
 
                         <div className="">
@@ -904,7 +1152,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             }} 
                             options={filiereData} 
                             optionLabel="filLib"
-                            placeholder="Selectionnez une filiere" className="w-full md:w-14rem" />
+                            placeholder="Selectionnez une filiere" 
+                            className="w-[220px]" />
+                            {/* className="w-full md:w-14rem" /> */}
                         </div>
                     </div>
                 }
@@ -944,17 +1194,6 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             />
                         </span>
                     </div>
- 
-                    {/* <div className="">
-                        {typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType && <TableData 
-                            data={products}
-                            isEditFormVisible={isEditFormVisible}
-                            setEditFormState={setEditFormState}
-                            functionSettingEditFormPosition={show}
-                            functionSettingEditFormInputValue={setValue}
-                        />}
-
-                    </div> */}
 
                     {typeOfDataFetched === typeOfDataFetchedEnums.AnneeAcademiqueType && <div>
                         {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
@@ -1210,12 +1449,21 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                                                         <i
                                                             className="pi pi-file-edit"
                                                             style={{ fontSize: '1.2rem', marginRight: '1rem' }}
-                                                            onClick={() => {}}
+                                                            onClick={() => {
+                                                                setEditFormState(true)
+                                                                setUpdatedValue(data.claLib)
+                                                                setUpdatedDataCode(data.claCode)
+                                                            }}
                                                         ></i>
                                                         <i
                                                             className="pi pi-trash"
                                                             style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
-                                                            onClick={() => {}}
+                                                            onClick={() => {
+                                                                setIsDataBeingDeleted(true)
+                                                                setSelectedDataCode(data.claCode)
+                                                                setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                                setConfirmationDialogVisibility(true)
+                                                            }}
                                                         >
                                                         </i>
                                                     </div>
@@ -1236,6 +1484,91 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         </div>
                     }
                         {/* classe data ends */}
+
+                        {/* rubrique data starts */}
+                    {donnesRef === "Rubrique" && typeOfDataFetched === typeOfDataFetchedEnums.RubriqueType 
+                    && 
+                        <div className="">
+                            {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                                <table>
+                                    <th>Code</th>
+                                    <th>Libelle</th>
+                                    <th>Montant</th>
+                                    <th>Frais Unique</th>
+                                    <th></th>
+                                    { fetchedDonneesRefsData?.map(data => {
+                                        return (
+                                            <tr className='font-bold' key={data.claCode}>
+                                                <td>{data.rubCode}</td>
+                                                <td>{data.rubLib}</td>
+                                                <td>{data.rubMontant}</td>
+                                                <td>
+
+                                                <ToggleButton 
+                                                        onLabel="Oui" 
+                                                        offLabel="Non" 
+                                                        onIcon="pi pi-check" 
+                                                        offIcon="pi pi-times" 
+                                                        checked={data.rubFraisUnique ? true : false}
+                                                        onChange={(e:  ToggleButtonChangeEvent) => {
+                                                            // setChecked(e.value)
+                                                            // console.log(e.target.value)
+                                                            // setUpdateStatusData({
+                                                            //     newStatus: e.target.value,
+                                                            //     aacCode: data.aacCode
+                                                            // })
+                                                        }} 
+                                                        onClick={() => {
+                                                            // setConfirmationDialogVisibility(true)
+                                                            // if(data.aacStatus) {
+                                                            //     setConfirmationDialogMessage('Êtes vous sûre de vouloir désactiver cette année académique ?')
+                                                            // } else {
+                                                            //     setConfirmationDialogMessage("Êtes vous sûre de vouloir activer cette année academique? L'année en cours actuelle sera automatique désactiver")
+                                                            // }
+                                                        }}
+                                                        className={`w-9rem h-2rem ${data.rubFraisUnique && 'activeStatus'} `}
+                                                    />
+
+                                                </td>
+                                                {/* <td>{data.rubFraisUnique}</td> */}
+                                                <td>
+                                                    <div className="icons-wrapper">
+                                                        <i
+                                                            className="pi pi-file-edit"
+                                                            style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                            onClick={() => {
+                                                                setEditFormState(true)
+                                                                setUpdatedValue(data.rubLib)
+                                                                setUpdatedDataCode(data.rubCode)
+                                                                setUpdatedMontant(data.rubMontant)
+                                                            }}
+                                                        ></i>
+                                                        <i
+                                                            className="pi pi-trash"
+                                                            style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                            onClick={() => {
+                                                                setIsDataBeingDeleted(true)
+                                                                setSelectedDataCode(data.rubCode)
+                                                                setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                                setConfirmationDialogVisibility(true)
+                                                            }}
+                                                        >
+                                                        </i>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </table>
+                            </div>
+                            :
+                            <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                                {<p style={{ maxWidth: "70%" }} className='border-4'>Aucune Rubrique créée. Cliquez sur créer pour en ajouter.</p>}
+                            </div>
+                        }
+                        </div>
+                    }
+                        {/* rubrique data ends */}
                     
                 </div>
 
