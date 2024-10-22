@@ -14,5 +14,9 @@ export type fetchedDonneesRefsDataStructure = {
     nivCode: number,
     nivLib: string,
     claLib: string,
-    claCode: number
+    claCode: number,
+    rubCode: number,
+    rubLib: string,
+    rubMontant: number,
+    rubFraisUnique: number,
 }
