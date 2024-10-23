@@ -175,7 +175,10 @@ function DonneesRef() {
             <div 
                 className="col-12 lg:col-6 xl:col-3 cursor-pointer"
                 onClick={() =>{
-                    setClasseDonneesRefPopUp(true)
+                    // setClasseDonneesRefPopUp(true)
+                    setVisible(true)
+                    setSelectedDonneesRef('Classe')
+                    setDonneesRefPopUpState(true)
                 }}
             >
                 <div className="card mb-0">
@@ -193,7 +196,15 @@ function DonneesRef() {
             {/* classe ends */}
 
             {/* rubrique starts */}
-            <div className="col-12 lg:col-6 xl:col-3">
+            <div 
+                className="col-12 lg:col-6 xl:col-3"
+                onClick={() =>{
+                    // setClasseDonneesRefPopUp(true)
+                    setVisible(true)
+                    setSelectedDonneesRef('Rubrique')
+                    setDonneesRefPopUpState(true)
+                }}
+            >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>

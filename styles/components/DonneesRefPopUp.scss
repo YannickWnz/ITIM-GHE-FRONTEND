@@ -27,6 +27,24 @@
 
     .table-wrapper {
 
+        .selectButton {
+
+            * {
+                padding: 4px 5px;
+                padding: 3px 6px;
+                font-size: 1em;
+                color: #ED4C67;
+                color: #12CBC4;
+            }
+        }
+
+        .trueUnique {
+
+            * {
+                color: white !important;
+            }
+        }
+
         .activeStatus {
             
 
