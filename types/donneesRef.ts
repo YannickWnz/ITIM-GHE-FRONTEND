@@ -19,4 +19,6 @@ export type fetchedDonneesRefsDataStructure = {
     rubLib: string,
     rubMontant: number,
     rubFraisUnique: number,
+    matCode: number,
+    matLib: string,
 }
