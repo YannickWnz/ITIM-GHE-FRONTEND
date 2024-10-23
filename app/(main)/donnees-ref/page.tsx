@@ -243,7 +243,14 @@ function DonneesRef() {
             {/* matiere ends */}
 
             {/* type professeur starts */}
-            <div className="col-12 lg:col-6 xl:col-3">
+            <div 
+            className="col-12 lg:col-6 xl:col-3 cursor-pointer"
+            onClick={() => {
+                setVisible(true)
+                setSelectedDonneesRef('Type Professeur')
+                setDonneesRefPopUpState(true)
+            }}
+            >
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>

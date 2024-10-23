@@ -114,6 +114,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     const [updatedMontant, setUpdatedMontant] = useState<number | null>(null)
     const [updatedRubriqueFraisUniqueValue, setUpdatedRubriqueFraisUniqueValue] = useState('');
 
+    const [profTauxHoraire, setProfTauxHoraire] = useState<number | null>(null)
+    const [updatedProfTauxHoraire, setUpdatedProfTauxHoraire] = useState<number | null>(null)
+
     // montrer les messages selon si les donnees ont ete modifier ou ajouter
     const footerContent = isEditFormVisible ? (
         <div>
@@ -149,6 +152,13 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Matiere") {
                         handleUpdateMatiereData()
+                    }
+                    else if(donnesRef === "Type Professeur") {
+                        if(!updatedProfTauxHoraire) {
+                            toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs taux horaire ne peut être vide`, life: 3000});
+                            return;
+                        }
+                        handleUpdateTypeProfesseurData()
                     }
                     setEditFormState(false) 
                     setEditRefData(false)
@@ -227,6 +237,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Matiere") {
                         handleDeleteMatiereData()
+                    }
+                    else if(donnesRef === "Type Professeur") {
+                        handleDeleteTypeProfesseurData()
                     }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
@@ -689,6 +702,107 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     }
 
     // MATIERE DATA CRUD ENDS
+
+    // Type professeur DATA CRUD ENDS
+
+    // function qui se charge de la recuperation des filieres
+    const handleFetchTypeProfesseurData = async () => {
+
+        if(donnesRef !== "Type Professeur") return;
+
+        try {
+            
+            const response = await axios.get(`${backendApi}/api/typeProfesseur`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la creation des filieres
+    const handleSubmitTypeProfesseurData = async () => {
+
+        if(donnesRef !== "Type Professeur") return;
+
+        let dataToBeSubmitted = {
+            tprLib: newDataValue,
+            tprTauxHoraire: profTauxHoraire,
+            tprCreerPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/typeProfesseur`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée créée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la mise a jour des filieres
+    const handleUpdateTypeProfesseurData = async () => {
+
+        if(donnesRef !== "Type Professeur") return;
+
+        if(!updatedValue.trim() || !updatedProfTauxHoraire) return;
+
+        let dataToBeSubmitted = {
+            tprLib: updatedValue,
+            tprTauxHoraire: updatedProfTauxHoraire,
+            tprModifierPar: "johnnywnz",
+        }
+
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/typeProfesseur/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la suppression des filieres
+    const handleDeleteTypeProfesseurData = async () => {
+
+        if(donnesRef !== "Type Professeur" || !selectedDataCode) return;
+
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/typeProfesseur/${selectedDataCode}`)
+
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée supprimée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // Type professeur DATA CRUD ENDS
     
     // function qui se charge de la creation des filieres
     const handleSubmitFiliereData = async () => {
@@ -996,6 +1110,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 handleFetchMatiereData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
                 break;
+
+            case "Type Professeur":
+                handleFetchTypeProfesseurData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
         
             default:
                 break;
@@ -1033,6 +1152,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Matiere":
                 handleSubmitMatiereData()
+                break;
+
+            case "Type Professeur":
+                handleSubmitTypeProfesseurData()
                 break;
         
             default:
@@ -1093,6 +1216,16 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         defaultValue={updatedValue}
                     />
 
+                        {donnesRef === "Type Professeur" && <InputNumber 
+                            value={updatedProfTauxHoraire} 
+                            onChange={(e) => 
+                                setUpdatedProfTauxHoraire(e.value)
+                            }
+                            placeholder={`${donnesRef} taux horaire`}
+                            className='w-full outline-none mt-3' 
+                        />}
+
+
                         {donnesRef === "Rubrique" && 
                             <>
                                 <InputNumber 
@@ -1144,7 +1277,7 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     visible={visible}
                     style={{ width: '40vw' }} 
                     onHide={() => {
-                    if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib(''); seNewDataValue(''); setRubriqueMontant(null); setRubriqueFraisUniqueValue('Non') 
+                    if (!newDonneesRefFormState) return; setEditFormState(false); setEditRefData(false); setNewDonneesRefFormState(false); setSelectedAnneeAcademiqueCode(null); setSelectedDonneesRefLib(''); seNewDataValue(''); setRubriqueMontant(null); setRubriqueFraisUniqueValue('Non'); setProfTauxHoraire(null)
                     }} 
                     position={position}
                     footer={footerContent}>
@@ -1179,6 +1312,15 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                             placeholder={`${donnesRef} Libelle`}
                             className='w-full outline-none'
                         />
+
+                        {donnesRef === "Type Professeur" && <InputNumber 
+                            value={profTauxHoraire} 
+                            onChange={(e) => 
+                                setProfTauxHoraire(e.value)
+                            }
+                            placeholder={`${donnesRef} taux horaire`}
+                            className='w-full outline-none mt-3' 
+                        />}
 
                         {donnesRef === "Rubrique" && 
                         <>
@@ -1730,6 +1872,60 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     </div>}
                         {/* matiere data ends */}
+
+                    {/* type professeur data starts */}
+                    {donnesRef === "Type Professeur" && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                    <div className="">
+                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                            <table>
+                                <th>Code</th>
+                                <th>Libelle</th>
+                                <th>Taux Horaire</th>
+                                <th></th>
+                                {fetchedDonneesRefsData?.map(data => {
+                                    return (
+                                        <tr className='font-bold' key={data.tprCode}>
+                                            <td>{data.tprCode}</td>
+                                            <td>{data.tprLib}</td>
+                                            <td>{data.tprTauxHoraire}</td>
+                                            <td>
+                                                <div className="icons-wrapper">
+                                                    <i
+                                                        className="pi pi-file-edit"
+                                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                        onClick={() => {
+                                                            setEditFormState(true)
+                                                            setUpdatedValue(data.tprLib)
+                                                            setUpdatedProfTauxHoraire(data.tprTauxHoraire)
+                                                            setUpdatedDataCode(data.tprCode)
+                                                        }}
+                                                    ></i>
+                                                    <i
+                                                        className="pi pi-trash"
+                                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.tprCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
+                                                    >
+                                                    </i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                        </div>
+                        :
+                        <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucun Type Professeur créé. Cliquez sur créer pour en ajouter.</p>
+                        </div>
+                    }
+                    </div>}
+                        {/* type professeur data ends */}
                     
                 </div>
 

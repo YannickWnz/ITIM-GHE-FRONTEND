@@ -21,4 +21,7 @@ export type fetchedDonneesRefsDataStructure = {
     rubFraisUnique: number,
     matCode: number,
     matLib: string,
+    tprCode: number,
+    tprLib: string,
+    tprTauxHoraire: number,
 }
