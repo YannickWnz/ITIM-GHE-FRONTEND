@@ -125,6 +125,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 label="Confirmez" 
                 icon="pi pi-check" 
                 onClick={() => {
+                    if(!updatedValue.trim()) {
+                        toast.current && toast.current.show({severity:'error', summary: 'Erreur', detail:`Le champs ne peut être vide`, life: 3000});
+                        return;
+                    }
                     if(donnesRef === "Annee Academique") {
                         updateAnneeAcademiqueData()
                     }
@@ -142,6 +146,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Rubrique") {
                         handleUpdateRubriqueData()
+                    }
+                    else if(donnesRef === "Matiere") {
+                        handleUpdateMatiereData()
                     }
                     setEditFormState(false) 
                     setEditRefData(false)
@@ -217,6 +224,9 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                     }
                     else if(donnesRef === "Rubrique") {
                         handleDeleteRubriqueData()
+                    }
+                    else if(donnesRef === "Matiere") {
+                        handleDeleteMatiereData()
                     }
                     setConfirmationDialogVisibility(false)
                     setIsDataBeingDeleted(false)
@@ -588,6 +598,97 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
     }
 
     // Rubrique DATA CRUD END
+
+    // MATIERE DATA CRUD STARTS
+
+    const handleFetchMatiereData = async () => {
+
+        try {
+
+            const response = await axios.get(`${backendApi}/api/matiere`)
+
+            console.log(response.data)
+            if(response.status === 200) {
+                setFetchedDonneesRefsData(response.data)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la creation des matieres
+    const handleSubmitMatiereData = async () => {
+
+        if(donnesRef !== "Matiere") return;
+
+        let dataToBeSubmitted = {
+            matLib: newDataValue,
+            matCreerPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.post(`${backendApi}/api/matiere`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+                showSuccess('Donnée créée avec succes')
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+    // function qui se charge de la mise a jour des matieres
+    const handleUpdateMatiereData = async () => {
+
+        if(donnesRef !== "Matiere") return;
+
+        let dataToBeSubmitted = {
+            matLib: updatedValue,
+            matModifierPar: "yannickwnz"
+        }
+
+        try {
+            
+            const response = await axios.put(`${backendApi}/api/matiere/${updatedDataCode}`, dataToBeSubmitted)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // function qui se charge de la suppression des matieres
+    const handleDeleteMatiereData = async () => {
+
+        if(donnesRef !== "Matiere") return;
+
+        try {
+            
+            const response = await axios.delete(`${backendApi}/api/matiere/${selectedDataCode}`)
+
+            // console.log(response.data)
+            if(response.status === 200) {
+                fetchingDonnessReferentielles()
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // MATIERE DATA CRUD ENDS
     
     // function qui se charge de la creation des filieres
     const handleSubmitFiliereData = async () => {
@@ -890,6 +991,11 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                 handleFetchRubriqueData()
                 setTypeOfDataFetched(typeOfDataFetchedEnums.RubriqueType);
                 break;
+
+            case "Matiere":
+                handleFetchMatiereData()
+                setTypeOfDataFetched(typeOfDataFetchedEnums.CodeAndLibType);
+                break;
         
             default:
                 break;
@@ -923,6 +1029,10 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
 
             case "Rubrique":
                 handleSubmitRubriqueData()
+                break;
+
+            case "Matiere":
+                handleSubmitMatiereData()
                 break;
         
             default:
@@ -1569,6 +1679,57 @@ export const DonneesRefPopUp = ({donnesRef, popUpState, setPopUpState, setDonnee
                         </div>
                     }
                         {/* rubrique data ends */}
+
+                        {/* matiere data starts */}
+                    {donnesRef === "Matiere" && typeOfDataFetched === typeOfDataFetchedEnums.CodeAndLibType 
+                    && 
+                    <div className="">
+                        {fetchedDonneesRefsData.length > 0 ? <div className='table-wrapper'>
+                            <table>
+                                <th>Code</th>
+                                <th>Libelle</th>
+                                <th></th>
+                                {fetchedDonneesRefsData?.map(data => {
+                                    return (
+                                        <tr className='font-bold' key={data.matCode}>
+                                            <td>{data.matCode}</td>
+                                            <td>{data.matLib}</td>
+                                            <td>
+                                                <div className="icons-wrapper">
+                                                    <i
+                                                        className="pi pi-file-edit"
+                                                        style={{ fontSize: '1.2rem', marginRight: '1rem' }}
+                                                        onClick={() => {
+                                                            setEditFormState(true)
+                                                            setUpdatedValue(data.matLib)
+                                                            setUpdatedDataCode(data.matCode)
+                                                        }}
+                                                    ></i>
+                                                    <i
+                                                        className="pi pi-trash"
+                                                        style={{ fontSize: '1.2rem', color: 'crimson', fontWeight: 'bold' }}
+                                                        onClick={() => {
+                                                            setIsDataBeingDeleted(true)
+                                                            setSelectedDataCode(data.matCode)
+                                                            setConfirmationDialogMessage('Êtes vous sûre de vouloir supprimer cette donnée ?')
+                                                            setConfirmationDialogVisibility(true)
+                                                        }}
+                                                    >
+                                                    </i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </table>
+                        </div>
+                        :
+                        <div className='w-full text-center font-bold mt-4 flex' style={{ justifyContent: "center" }}>
+                            <p style={{ maxWidth: "70%" }} className='border-4'>Aucune Matiere créée. Cliquez sur créer pour en ajouter un.</p>
+                        </div>
+                    }
+                    </div>}
+                        {/* matiere data ends */}
                     
                 </div>
 
